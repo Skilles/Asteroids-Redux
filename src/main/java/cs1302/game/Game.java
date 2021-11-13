@@ -1,85 +1,67 @@
 package cs1302.game;
 
+import javafx.animation.AnimationTimer;
+import javafx.scene.canvas.Canvas;
+import javafx.scene.canvas.GraphicsContext;
+import javafx.scene.input.KeyCode;
+import javafx.scene.input.KeyEvent;
+import javafx.scene.layout.StackPane;
+import javafx.stage.Stage;
+
 import java.util.BitSet;
-import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import javafx.animation.KeyFrame;
-import javafx.animation.Timeline;
-import javafx.event.Event;
-import javafx.geometry.Bounds;
-import javafx.geometry.BoundingBox;
-import javafx.scene.input.KeyEvent;
-import javafx.scene.input.KeyCode;
-import javafx.scene.input.MouseEvent;
-import javafx.scene.layout.Region;
-import javafx.util.Duration;
-
-/**
- * An abstract parent class for simple games. The central component of any concrete
- * child class should be its overridden {@link #update} method as it represents one
- * iteration of the main game loop -- here is some pseudo code that illustrates
- * the {@link #play} method:
- *
- * <pre>
- * init();
- * while(playing) {
- *    update();
- * } // while
- * </pre>
- */
-public abstract class Game extends Region {
+public abstract class Game extends StackPane {
 
     protected final Logger logger = Logger.getLogger("cs1302.game.Game");
 
-    private final Bounds bounds;                     // game bounds
-    private final Duration fpsTarget;                // target duration for game loop
-    private final Timeline loop = new Timeline();    // timeline for main game loop
-    private final BitSet keysPressed = new BitSet(); // set of currently pressed keys
+    int width;
+    int height;
 
-    private boolean initialized = false;             // play() has been called?
+    Canvas canvas;
+    GraphicsContext ctx;
 
-    /**
-     * Construct a {@code Game} object.
-     * @param width minimum game region width
-     * @param height minimum game region height
-     * @param fps target frames per second (FPS)
-     */
-    public Game(int width, int height, int fps) {
-        super();
+    private AnimationTimer timer;
+    private final BitSet keysPressed = new BitSet();
+    private long delta;
+    private double elapsedTime;
+
+    public Game(Stage stage, int width, int height) {
+        this.width = width;
+        this.height = height;
+        init(stage);
+    }
+
+    public void init(Stage stage) {
+        this.canvas = new Canvas(width, height);
+        this.ctx = canvas.getGraphicsContext2D();
         setMinWidth(width);
         setMinHeight(height);
-        this.bounds = new BoundingBox(0, 0, width, height);
-        this.fpsTarget = Duration.millis(1000.0 / fps);
-        addEventFilter(KeyEvent.KEY_PRESSED, event -> handleKeyPressed(event));
-        addEventFilter(KeyEvent.KEY_RELEASED, event -> handleKeyReleased(event));
-        initGameLoop();
-    } // Game
 
-    /**
-     * Initialize the main game loop.
-     */
-    private void initGameLoop() {
-        KeyFrame updateFrame = new KeyFrame(fpsTarget, event -> {
-            requestFocus();
-            update();
-        });
-        loop.setCycleCount(Timeline.INDEFINITE);
-        loop.getKeyFrames().add(updateFrame);
-    } // initGameLoop
+        stage.addEventFilter(KeyEvent.KEY_PRESSED, this::handleKeyPressed);
+        stage.addEventFilter(KeyEvent.KEY_RELEASED, this::handleKeyReleased);
 
-    /**
-     * Initialize the game. A game may override this method to perform initialization
-     * that needs to happen prior to the main game loop. The {@link #play} method
-     * will attempt to call this method only once. The implementation of this method
-     * provided by the {@code Game} class does nothing.
-     */
-    protected void init() {}
+        getChildren().addAll(canvas);
 
-    /**
-     * Perform one iteration of the main game loop.
-     */
-    protected abstract void update();
+        this.timer = new AnimationTimer() {
+            @Override
+            public void handle(long now) {
+                update(now);
+                render(now);
+            }
+        };
+        delta = System.nanoTime();
+    }
+
+    public void update(long currentNanoTime) {
+        // calculate time since last update.
+        elapsedTime = (currentNanoTime - delta) / 1000000000.0;
+        delta = currentNanoTime;
+    }
+
+    public void render(long currentNanoTime) {
+        ctx.clearRect(0, 0, width, height);
+    }
 
     /**
      * Add the key code for the pressed key to the set of pressed keys.
@@ -124,45 +106,16 @@ public abstract class Game extends Region {
         } // if
     } // isKeyPressed
 
-    /**
-     * Setup and start the main game loop.
-     */
-    public final void play() {
-        if (!initialized) {
-            init();
-            initialized = true;
-        } // if
-        loop.play();
-    } // start
+    public void play() {
+        timer.start();
+    }
 
-    /**
-     * Stop the main game loop.
-     */
-    public final void stop() {
-        loop.stop();
-    } // stop
+    public void pause() {
+        timer.stop();
+    }
 
-    /**
-     * Pause the main game loop.
-     */
-    public final void pause() {
-        loop.pause();
-    } // pause
+    protected double elapsedTime() {
+        return elapsedTime;
+    }
 
-    /**
-     * Set the log level specifying which message levels will be logged by the game's logger.
-     * @param level level to set
-     */
-    public final void setLogLevel(Level level) {
-        logger.setLevel(level);
-    } // setLogLevel
-
-    /**
-     * Get the bounds for this game that were specified when it was constructed.
-     * @return bounds for this game
-     */
-    public final Bounds getGameBounds() {
-        return bounds;
-    } // getGameBounds
-
-} // Game
+}

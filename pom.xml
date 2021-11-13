@@ -32,15 +32,15 @@
     <!-- project settings -->
     <exec.mainClass>cs1302.omega/cs1302.omega.OmegaDriver</exec.mainClass>
     <cs1302.project.description>https://github.com/cs1302uga/${project.name}</cs1302.project.description>
-    <cs1302.webwork.url>https://webwork.cs.uga.edu/~${env.USER}/${project.name}</cs1302.webwork.url>
-    <cs1302.webwork.path>file:/home/myid/${env.USER}/public_html/${project.name}</cs1302.webwork.path>
+    <cs1302.webwork.url>https://webwork.cs.uga.edu/~$bm44959/${project.name}</cs1302.webwork.url>
+    <cs1302.webwork.path>file:/home/myid/$bm44959/public_html/${project.name}</cs1302.webwork.path>
   </properties>
 
   <developers>
     <developer>
-      <name>${env.USER}</name>
-      <email>${env.USER}@uga.edu</email>
-      <url>https://webwork.cs.uga.edu/~${env.USER}/${project.name}</url>
+      <name>$bm44959</name>
+      <email>$bm44959@uga.edu</email>
+      <url>https://webwork.cs.uga.edu/~$bm44959/${project.name}</url>
     </developer>
   </developers>
 
@@ -215,8 +215,8 @@
 
   <distributionManagement>
     <site>
-      <id>${env.USER}.${project.name}</id>
-      <name>${env.USER} ${project.name}</name>
+      <id>$bm44959.${project.name}</id>
+      <name>$bm44959 ${project.name}</name>
       <url>${cs1302.webwork.path}</url>
     </site>
   </distributionManagement>
