@@ -1,6 +1,9 @@
 package cs1302.game;
 
+import cs1302.game.api.Sprite;
 import javafx.animation.AnimationTimer;
+import javafx.geometry.BoundingBox;
+import javafx.geometry.Bounds;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.input.KeyCode;
@@ -9,6 +12,7 @@ import javafx.scene.layout.StackPane;
 import javafx.stage.Stage;
 
 import java.util.BitSet;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 public abstract class Game extends StackPane {
@@ -20,6 +24,7 @@ public abstract class Game extends StackPane {
 
     Canvas canvas;
     GraphicsContext ctx;
+    Bounds bounds;
 
     private AnimationTimer timer;
     private final BitSet keysPressed = new BitSet();
@@ -35,6 +40,8 @@ public abstract class Game extends StackPane {
     public void init(Stage stage) {
         this.canvas = new Canvas(width, height);
         this.ctx = canvas.getGraphicsContext2D();
+        this.bounds = new BoundingBox(0, 0, width, height);
+        Sprite.setBounds(bounds);
         setMinWidth(width);
         setMinHeight(height);
 
@@ -51,6 +58,7 @@ public abstract class Game extends StackPane {
             }
         };
         delta = System.nanoTime();
+        logger.setLevel(Level.WARNING);
     }
 
     public void update(long currentNanoTime) {

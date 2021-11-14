@@ -1,23 +1,32 @@
 package cs1302.game.api;
 
-import javafx.geometry.Rectangle2D;
+import javafx.geometry.Bounds;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.image.Image;
-import javafx.scene.transform.Affine;
-import javafx.scene.transform.Rotate;
+import javafx.scene.shape.Rectangle;
+import javafx.scene.shape.Shape;
 
-public class Sprite
+public abstract class Sprite
 {
     private Image image;
     double positionX;
+    double centerX;
     double positionY;
+    double centerY;
     double velocityX;
     double velocityY;
+    double velocityR;
     double width;
     double height;
 
-    private float angle;
-    private Rotate rotation;
+    private boolean alive;
+
+    static Bounds bounds;
+
+    final double maxWidth = 1280;
+    final double maxHeight = 720;
+
+    double angle;
     double radAngle;
 
     public Sprite() {
@@ -25,12 +34,13 @@ public class Sprite
         positionY = 0;
         velocityX = 0;
         velocityY = 0;
-        rotation = new Rotate();
+        alive = true;
     }
 
-    public Sprite(String path) {
+    public Sprite(String path, Size size) {
         this();
         setImage(path);
+        resize(size);
     }
 
     public void setImage(Image i) {
@@ -49,9 +59,10 @@ public class Sprite
         positionY = y;
     }
 
-    public void setVelocity(double x, double y) {
+    public void setVelocity(double x, double y, double r) {
         velocityX = x;
         velocityY = y;
+        velocityR = r;
     }
 
     public void addVelocity(double x, double y) {
@@ -62,26 +73,34 @@ public class Sprite
     public void update(double time) {
         positionX += velocityX * time;
         positionY += velocityY * time;
+
+        centerX = positionX + width / 2;
+        centerY = positionY + height / 2;
+
+        setRotation(angle + velocityR);
+
+        if (wrapAround()) {
+            onOffScreen();
+        }
     }
 
     public void render(GraphicsContext gc) {
         gc.save();
-        /*applyRotation(gc);
-        rotatePosition();
-        gc.drawImage(image, positionX, positionY);*/
         gc.translate(positionX, positionY);
-        gc.rotate(rotation.getAngle());
+        gc.rotate(angle);
         gc.translate(-(width / 2), -(height / 2));
         gc.drawImage(image, 0, 0);
         gc.restore();
     }
 
-    public Rectangle2D getBoundary() {
-        return new Rectangle2D(positionX, positionY, width, height);
+    public Shape getBoundary() {
+        return new Rectangle(positionX - width / 2, positionY - height / 2, width, height);
+        // return new Rectangle2D(positionX, positionY, width, height);
     }
 
     public boolean intersects(Sprite s) {
-        return s.getBoundary().intersects( this.getBoundary() );
+        return Shape.intersect(getBoundary(), s.getBoundary()).getBoundsInLocal().getWidth() != -1;
+        // return s.getBoundary().intersects( this.getBoundary() );
     }
 
     public String toString() {
@@ -96,38 +115,49 @@ public class Sprite
         height = image.getHeight();
     }
 
-    public void rotate(float angle) {
-        rotation = new Rotate(angle, positionX + width / 2, positionY + height / 2);
+    public void setRotation(double angle) {
         this.angle = angle;
         this.radAngle = Math.toRadians(angle);
     }
 
-    private void rotatePosition() {
-        double centerX = positionX + width / 2;
-        double centerY = positionY + height / 2;
-
-        double radAngle = Math.toRadians(Math.abs(rotation.getAngle() - angle));
-
-        final double tempX = positionX;
-        final double tempY = positionY;
-
-        positionX = centerX + Math.cos(radAngle) * (tempX - centerX) - Math.sin(radAngle) * (tempY - centerY);
-        positionY = centerY + Math.sin(radAngle) * (tempX - centerX) + Math.cos(radAngle) * (tempY - centerY);
-
-
-        angle = (float) rotation.getAngle();
+    public void addRotation(double angle) {
+        setRotation(this.angle + angle);
     }
 
-    public void addRotation(float angle) {
-        rotate(this.angle + angle);
+    public void addRotationVelocity(double velocity) {
+        velocityR += velocity;
     }
 
-    private void applyRotation(GraphicsContext gc) {
-        // gc.rotate(rotation.getAngle());
-        gc.transform(new Affine(rotation));
+    public void kill() {
+        onKill();
+        alive = false;
+    }
+
+    public boolean isAlive() {
+        return alive;
+    }
+
+    protected abstract void onOffScreen();
+
+    protected abstract void onKill();
+
+    protected boolean wrapAround() {
+        if (centerX > maxWidth + width) {
+            positionX = -(width / 2);
+        } else if (centerX < 0) {
+            positionX = maxWidth + width / 2;
+        } else if (centerY > maxHeight + height) {
+            positionY = -(height / 2);
+        } else if (centerY < 0) {
+            positionY = maxHeight + height / 2;
+        } else {
+            return false;
+        }
+        return true;
     }
 
     public enum Size {
+        TINY(25, 25),
         SMALL(50, 50),
         MEDIUM(75, 75),
         LARGE(100, 100),
@@ -149,5 +179,13 @@ public class Sprite
         public int getWidth() {
             return width;
         }
+
+        public double getMassMultiplier() {
+            return (1 + ordinal() / 10.0);
+        }
+    }
+
+    public static void setBounds(Bounds bounds) {
+        Sprite.bounds = bounds;
     }
 }

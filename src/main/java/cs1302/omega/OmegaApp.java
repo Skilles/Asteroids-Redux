@@ -4,10 +4,6 @@ import cs1302.game.Asteroids;
 import javafx.application.Application;
 import javafx.application.Platform;
 import javafx.scene.Group;
-import javafx.scene.control.Label;
-import javafx.scene.image.Image;
-import javafx.scene.image.ImageView;
-import javafx.scene.layout.VBox;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
 
@@ -37,7 +33,7 @@ public class OmegaApp extends Application {
         root.getChildren().add(game);
 
         // setup stage
-        stage.setTitle("OmegaApp!");
+        stage.setTitle("Asteroids Reborn");
         stage.setScene(scene);
         stage.setOnCloseRequest(event -> Platform.exit());
         stage.sizeToScene();
