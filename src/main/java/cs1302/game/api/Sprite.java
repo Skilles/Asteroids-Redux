@@ -3,11 +3,13 @@ package cs1302.game.api;
 import javafx.geometry.Bounds;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.image.Image;
+import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
 import javafx.scene.shape.Shape;
 
-public abstract class Sprite
-{
+import java.util.Objects;
+
+public abstract class Sprite {
     private Image image;
     double positionX;
     double centerX;
@@ -91,6 +93,17 @@ public abstract class Sprite
         gc.translate(-(width / 2), -(height / 2));
         gc.drawImage(image, 0, 0);
         gc.restore();
+    }
+
+    protected void drawBoundary(GraphicsContext gc, Color color) {
+        gc.setFill(color);
+        Shape collisionShape = getBoundary();
+        double cx = collisionShape.getBoundsInParent().getMinX();
+        double cy = collisionShape.getBoundsInParent().getMinY();
+        double w = collisionShape.getBoundsInParent().getWidth();
+        double h = collisionShape.getBoundsInParent().getHeight();
+        gc.fillOval(cx, cy, w, h);
+        gc.setFill(Color.GREEN);
     }
 
     public Shape getBoundary() {
@@ -188,4 +201,10 @@ public abstract class Sprite
     public static void setBounds(Bounds bounds) {
         Sprite.bounds = bounds;
     }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(centerX, centerY, angle);
+    }
+
 }

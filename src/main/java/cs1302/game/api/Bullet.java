@@ -2,6 +2,8 @@ package cs1302.game.api;
 
 public class Bullet extends Sprite {
 
+    private Sprite parent;
+
     public Bullet(Sprite parent, double force) {
         super("file:resources/sprites/longBullet.png", Size.TINY);
         double cos = Math.cos(parent.radAngle - 1.57);
@@ -9,8 +11,10 @@ public class Bullet extends Sprite {
         this.positionX = parent.positionX + 20 * cos;
         this.positionY = parent.positionY + 20 * sin;
         this.setRotation(parent.angle - 90);
-        this.velocityX = parent.velocityX + force * cos;
-        this.velocityY = parent.velocityY + force * sin;
+        this.velocityX = force * cos;
+        this.velocityY = force * sin;
+
+        this.parent = parent;
     }
 
     @Override

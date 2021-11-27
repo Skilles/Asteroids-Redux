@@ -19,8 +19,8 @@ public abstract class Game extends StackPane {
 
     protected final Logger logger = Logger.getLogger("cs1302.game.Game");
 
-    int width;
-    int height;
+    public static int WIDTH;
+    public static int HEIGHT;
 
     Canvas canvas;
     GraphicsContext ctx;
@@ -32,18 +32,18 @@ public abstract class Game extends StackPane {
     private double elapsedTime;
 
     public Game(Stage stage, int width, int height) {
-        this.width = width;
-        this.height = height;
+        WIDTH = width;
+        HEIGHT = height;
         init(stage);
     }
 
     public void init(Stage stage) {
-        this.canvas = new Canvas(width, height);
+        this.canvas = new Canvas(WIDTH, HEIGHT);
         this.ctx = canvas.getGraphicsContext2D();
-        this.bounds = new BoundingBox(0, 0, width, height);
+        this.bounds = new BoundingBox(0, 0, WIDTH, HEIGHT);
         Sprite.setBounds(bounds);
-        setMinWidth(width);
-        setMinHeight(height);
+        setMinWidth(WIDTH);
+        setMinHeight(HEIGHT);
 
         stage.addEventFilter(KeyEvent.KEY_PRESSED, this::handleKeyPressed);
         stage.addEventFilter(KeyEvent.KEY_RELEASED, this::handleKeyReleased);
@@ -53,8 +53,8 @@ public abstract class Game extends StackPane {
         this.timer = new AnimationTimer() {
             @Override
             public void handle(long now) {
-                update(now);
                 render(now);
+                update(now);
             }
         };
         delta = System.nanoTime();
@@ -68,7 +68,7 @@ public abstract class Game extends StackPane {
     }
 
     public void render(long currentNanoTime) {
-        ctx.clearRect(0, 0, width, height);
+        ctx.clearRect(0, 0, WIDTH, HEIGHT);
     }
 
     /**

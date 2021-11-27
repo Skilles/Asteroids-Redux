@@ -1,15 +1,21 @@
 package cs1302.game.api;
 
 import javafx.scene.canvas.GraphicsContext;
-import javafx.scene.shape.Rectangle;
+import javafx.scene.paint.Color;
+import javafx.scene.shape.Circle;
 import javafx.scene.shape.Shape;
+import javafx.util.Pair;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.function.Consumer;
 
 public class Player extends Sprite {
 
     private final double hAcceleration;
     private final double vAcceleration;
+
+    private BulletManager bulletManager;
 
     // FIXME need cooldown manager tied to delta
     private final int COOLDOWN = 70;
@@ -19,6 +25,7 @@ public class Player extends Sprite {
         super("file:resources/sprites/spaceship.png", Size.SMALL);
         hAcceleration = 500;
         vAcceleration = 500;
+        bulletManager = new BulletManager();
     }
 
     public void turnRight(double delta) {
@@ -67,23 +74,23 @@ public class Player extends Sprite {
         if (currentCooldown > 0) {
             currentCooldown--;
         }
+
+        bulletManager.update(time);
     }
 
     @Override
     public void render(GraphicsContext gc) {
         super.render(gc);
-        Shape collisionShape = getBoundary();
-        gc.fillRect(collisionShape.getBoundsInParent().getCenterX(), collisionShape.getBoundsInParent().getCenterY(), collisionShape.getBoundsInParent().getWidth(), collisionShape.getBoundsInParent().getHeight());
-        // gc.fillRect(positionX - width / 3, positionY - height / 2.5, width * (2.0 / 3), height * (2.0 / 3));
+        drawBoundary(gc, Color.AQUA);
+        bulletManager.render(gc);
     }
 
     @Override
     public Shape getBoundary() {
-        // Rectangle rectangle = new Rectangle(positionX - width / 3, positionY - height / 2.5, width * (2.0 / 3), height * (2.0 / 3));
-        Rectangle rectangle = new Rectangle(positionX - width / 1.5, positionY - height / 1.5, width * (2.0 / 3), height * (2.0 / 3));
-        // rectangle.getTransforms().add(new Rotate(this.angle, rectangle.getX() + rectangle.getWidth() / 2, rectangle.getY() + rectangle.getHeight() / 2));
+        Circle circle = new Circle(positionX, positionY, width / 2);
+        // rectangle.getTransforms().add(new Rotate(this.angle, positionX, positionY));
         // rectangle.setRotate(this.angle);
-        return rectangle;
+        return circle;
     }
 
     @Override
@@ -96,11 +103,69 @@ public class Player extends Sprite {
 
     }
 
-    public void shoot(List<Bullet> bulletList, double delta) {
+    public void shoot(double delta) {
         if (currentCooldown == 0) {
             currentCooldown = COOLDOWN;
-            delta = delta * 500;
-            bulletList.add(new Bullet(this, 300 * delta));
+            bulletManager.add(new Bullet(this, 300));
+        }
+    }
+
+    public BulletManager getBulletManager() {
+        return bulletManager;
+    }
+
+    static class BulletManager {
+
+        private final List<Bullet> bulletList;
+
+        private final List<Pair<Sprite, Consumer<Bullet>>> consumers;
+
+        public BulletManager() {
+            bulletList = new ArrayList<>();
+            consumers = new ArrayList<>();
+        }
+
+        public void update(double delta) {
+            bulletList.removeIf(bullet -> !bullet.isAlive());
+            consumers.removeIf(pair -> !pair.getKey().isAlive());
+
+            for (Bullet bullet : bulletList) {
+                bullet.update(delta);
+                for (int i = 0; i < consumers.size(); i++) {
+                    Pair<Sprite, Consumer<Bullet>> consumerPair = consumers.get(i);
+                    consumerPair.getValue().accept(bullet);
+                }
+            }
+        }
+
+        public void render(GraphicsContext gc) {
+            for (Bullet bullet : bulletList) {
+                bullet.render(gc);
+            }
+        }
+
+        public void add(Bullet bullet) {
+            bulletList.add(bullet);
+        }
+
+        public void remove(Bullet bullet) {
+            bulletList.remove(bullet);
+        }
+
+        public void removeAll() {
+            bulletList.clear();
+        }
+
+        public List<Bullet> getBullets() {
+            return bulletList;
+        }
+
+        public void bindFunction(Sprite sprite, Consumer<Bullet> consumer) {
+            consumers.add(new Pair<>(sprite, consumer));
+        }
+
+        public void removeConsumer(Sprite sprite) {
+            consumers.removeIf(pair -> pair.getKey() == sprite);
         }
     }
 
