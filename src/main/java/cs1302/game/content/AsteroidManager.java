@@ -14,8 +14,6 @@ public class AsteroidManager extends SpriteManager {
 
     private Player player;
 
-    private boolean playerDead;
-
     public AsteroidManager(Player player) {
         super();
         this.player = player;
@@ -34,21 +32,17 @@ public class AsteroidManager extends SpriteManager {
     @Override
     public void updateSprites(double delta) {
         super.updateSprites(delta);
-        boolean playerDead = false;
         for (Sprite sprite : sprites) {
             Asteroid asteroid = (Asteroid) sprite;
 
             asteroid.update(delta);
             if (asteroid.intersects(player)) {
-                playerDead = true;
-                asteroid.collided = true;
-            } else {
-                asteroid.collided = false;
+                asteroid.collide(player);
+                player.damage(1);
             }
             // Collide asteroids
             collideAsteroid(asteroid);
         }
-        this.playerDead = playerDead;
         sprites.removeIf(sprite -> !sprite.isAlive());
     }
 
@@ -87,7 +81,7 @@ public class AsteroidManager extends SpriteManager {
             double y = rng.nextDouble() * Game.HEIGHT;
 
             // Generate a random size for the asteroid
-            Sprite.Size size = Sprite.Size.values()[rng.nextInt(Sprite.Size.values().length)];
+            Sprite.Size size = Sprite.Size.values()[2 + rng.nextInt(Sprite.Size.values().length - 2)];
 
             // Create the asteroid
             Asteroid asteroid = new Asteroid(size);

@@ -3,10 +3,11 @@ package cs1302.game.content.sprites;
 import cs1302.game.content.BulletManager;
 import cs1302.game.content.HUDManager;
 import javafx.scene.canvas.GraphicsContext;
+import javafx.scene.effect.ColorAdjust;
 import javafx.scene.shape.Circle;
 import javafx.scene.shape.Shape;
 
-public class Player extends Sprite {
+public class Player extends PhysicSprite {
 
     private final double hAcceleration;
     private final double vAcceleration;
@@ -15,9 +16,13 @@ public class Player extends Sprite {
     private HUDManager hudManager;
 
     // FIXME need cooldown manager tied to delta
-    private final int COOLDOWN = 70;
-    private int currentCooldown = 0;
-    private int health = 5;
+    private static final int SHOOT_COOLDOWN = 50;
+    private int currentShootCooldown = 0;
+
+    private static final int MAX_HEALTH = 5;
+    private static final int DAMAGE_COOLDOWN = 100;
+    private int currentDamageCooldown = 0;
+    private int health = 3;
 
     public Player() {
         super("file:resources/sprites/spaceship.png", Size.SMALL, 300);
@@ -27,12 +32,10 @@ public class Player extends Sprite {
     }
 
     public void turnRight(double delta) {
-        // velocityR = 1;
         addRotation(150 * delta);
     }
 
     public void turnLeft(double delta) {
-        // velocityR = -1;
         addRotation(-150 * delta);
     }
 
@@ -47,18 +50,6 @@ public class Player extends Sprite {
     }
 
     public void brake(double delta, double force) {
-        /*if (velocityX > 0) {
-            velocityX -= Math.min(force, velocityX);
-        }
-        if (velocityX < 0) {
-            velocityX += Math.min(force, -velocityX);
-        }
-        if (velocityY > 0) {
-            velocityY -= Math.min(force, velocityY);
-        }
-        if (velocityY < 0) {
-            velocityY += Math.min(force, -velocityY);
-        }*/
         force = force * delta;
 
         velocityX *= (1 - force / 100);
@@ -69,8 +60,11 @@ public class Player extends Sprite {
     @Override
     public void update(double time) {
         super.update(time);
-        if (currentCooldown > 0) {
-            currentCooldown--;
+        if (currentShootCooldown > 0) {
+            currentShootCooldown--;
+        }
+        if (currentDamageCooldown > 0) {
+            currentDamageCooldown--;
         }
 
         bulletManager.update(time);
@@ -78,7 +72,14 @@ public class Player extends Sprite {
 
     @Override
     public void render(GraphicsContext gc) {
-        super.render(gc);
+        if (currentDamageCooldown > 0) {
+            drawDamage(gc);
+            super.render(gc);
+            gc.setEffect(null);
+        } else {
+            super.render(gc);
+        }
+
         // drawBoundary(gc, Color.AQUA);
         bulletManager.render(gc);
     }
@@ -98,7 +99,7 @@ public class Player extends Sprite {
 
     @Override
     public void onKill() {
-
+        hudManager.setGameOver(true);
     }
 
     public void setHudManager(HUDManager hudManager) {
@@ -109,8 +110,8 @@ public class Player extends Sprite {
     }
 
     public void shoot(double delta) {
-        if (currentCooldown == 0) {
-            currentCooldown = COOLDOWN;
+        if (currentShootCooldown == 0) {
+            currentShootCooldown = SHOOT_COOLDOWN;
             bulletManager.add(new Bullet(this, 300));
         }
     }
@@ -121,6 +122,26 @@ public class Player extends Sprite {
 
     public HUDManager getHudManager() {
         return hudManager;
+    }
+
+    public void damage(int damage) {
+        if (currentDamageCooldown == 0) {
+            currentDamageCooldown = DAMAGE_COOLDOWN;
+            health -= damage;
+            if (health <= 0) {
+                kill();
+            }
+        }
+    }
+
+    private void drawDamage(GraphicsContext gc) {
+        ColorAdjust tint = new ColorAdjust();
+        tint.setHue(0.8);
+        gc.setEffect(tint);
+    }
+
+    public int getHealth() {
+        return health;
     }
 
 }

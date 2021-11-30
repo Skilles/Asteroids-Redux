@@ -22,6 +22,7 @@ public abstract class Game extends StackPane {
 
     public static int WIDTH;
     public static int HEIGHT;
+    public static int FPS;
 
     Canvas canvas;
     GraphicsContext ctx;
@@ -31,6 +32,7 @@ public abstract class Game extends StackPane {
     private final BitSet keysPressed = new BitSet();
     private long delta;
     private double elapsedTime;
+    private int fpsCounter;
 
     protected MainMenu mainMenu;
     private String title;
@@ -71,6 +73,13 @@ public abstract class Game extends StackPane {
         // calculate time since last update.
         elapsedTime = (currentNanoTime - delta) / 1000000000.0;
         delta = currentNanoTime;
+
+        // calculate the fps
+        fpsCounter++;
+        if (fpsCounter == 100) {
+            FPS = (int) (1.0 / (elapsedTime));
+            fpsCounter = 0;
+        }
     }
 
     public void render(long currentNanoTime) {
