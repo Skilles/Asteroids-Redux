@@ -16,10 +16,12 @@ public class Player extends Sprite {
     private final double vAcceleration;
 
     private BulletManager bulletManager;
+    private HUDManager hudManager;
 
     // FIXME need cooldown manager tied to delta
     private final int COOLDOWN = 70;
     private int currentCooldown = 0;
+    private int health = 5;
 
     public Player() {
         super("file:resources/sprites/spaceship.png", Size.SMALL);
@@ -81,7 +83,7 @@ public class Player extends Sprite {
     @Override
     public void render(GraphicsContext gc) {
         super.render(gc);
-        drawBoundary(gc, Color.AQUA);
+        // drawBoundary(gc, Color.AQUA);
         bulletManager.render(gc);
     }
 
@@ -103,6 +105,13 @@ public class Player extends Sprite {
 
     }
 
+    public void setHudManager(HUDManager hudManager) {
+        if (this.hudManager != null) {
+            throw new RuntimeException("HUD Manager already set!");
+        }
+        this.hudManager = hudManager;
+    }
+
     public void shoot(double delta) {
         if (currentCooldown == 0) {
             currentCooldown = COOLDOWN;
@@ -112,6 +121,10 @@ public class Player extends Sprite {
 
     public BulletManager getBulletManager() {
         return bulletManager;
+    }
+
+    public HUDManager getHudManager() {
+        return hudManager;
     }
 
     static class BulletManager {

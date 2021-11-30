@@ -1,6 +1,7 @@
 package cs1302.game;
 
 import cs1302.game.api.AsteroidManager;
+import cs1302.game.api.HUDManager;
 import cs1302.game.api.Player;
 import javafx.scene.input.KeyCode;
 import javafx.scene.paint.Color;
@@ -13,6 +14,7 @@ public class Asteroids extends Game {
     private Random rng;
     private Player player;
     AsteroidManager asteroidManager;
+    HUDManager hudManager;
 
     public Asteroids(Stage stage, int width, int height) {
         super(stage, width, height);
@@ -29,6 +31,9 @@ public class Asteroids extends Game {
         asteroidManager = new AsteroidManager(player);
         asteroidManager.generateAsteroids(10, rng);
 
+        hudManager = new HUDManager();
+        player.setHudManager(hudManager);
+
         ctx.setFill( Color.GREEN );
         ctx.setStroke( Color.BLACK );
         ctx.setLineWidth(1);
@@ -44,6 +49,7 @@ public class Asteroids extends Game {
         player.update(elapsedTime());
 
         asteroidManager.updateSprites(elapsedTime());
+        hudManager.update(elapsedTime());
 
     }
 
@@ -52,6 +58,7 @@ public class Asteroids extends Game {
         super.render(delta);
         player.render(ctx);
         asteroidManager.drawSprites(ctx);
+        hudManager.render(ctx);
     }
 
     private void handleControls(double delta) {

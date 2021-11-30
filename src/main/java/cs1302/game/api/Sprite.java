@@ -196,6 +196,10 @@ public abstract class Sprite {
         public double getMassMultiplier() {
             return (1 + ordinal() / 10.0);
         }
+
+        public int getScore() {
+            return (int) (Math.pow(1 + values().length - ordinal(), 2) * 100);
+        }
     }
 
     public static void setBounds(Bounds bounds) {
