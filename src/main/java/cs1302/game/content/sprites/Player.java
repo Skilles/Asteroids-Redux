@@ -1,21 +1,17 @@
-package cs1302.game.api;
+package cs1302.game.content.sprites;
 
+import cs1302.game.content.BulletManager;
+import cs1302.game.content.HUDManager;
 import javafx.scene.canvas.GraphicsContext;
-import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
 import javafx.scene.shape.Shape;
-import javafx.util.Pair;
-
-import java.util.ArrayList;
-import java.util.List;
-import java.util.function.Consumer;
 
 public class Player extends Sprite {
 
     private final double hAcceleration;
     private final double vAcceleration;
 
-    private BulletManager bulletManager;
+    private final BulletManager bulletManager;
     private HUDManager hudManager;
 
     // FIXME need cooldown manager tied to delta
@@ -125,61 +121,6 @@ public class Player extends Sprite {
 
     public HUDManager getHudManager() {
         return hudManager;
-    }
-
-    static class BulletManager {
-
-        private final List<Bullet> bulletList;
-
-        private final List<Pair<Sprite, Consumer<Bullet>>> consumers;
-
-        public BulletManager() {
-            bulletList = new ArrayList<>();
-            consumers = new ArrayList<>();
-        }
-
-        public void update(double delta) {
-            bulletList.removeIf(bullet -> !bullet.isAlive());
-            consumers.removeIf(pair -> !pair.getKey().isAlive());
-
-            for (Bullet bullet : bulletList) {
-                bullet.update(delta);
-                for (int i = 0; i < consumers.size(); i++) {
-                    Pair<Sprite, Consumer<Bullet>> consumerPair = consumers.get(i);
-                    consumerPair.getValue().accept(bullet);
-                }
-            }
-        }
-
-        public void render(GraphicsContext gc) {
-            for (Bullet bullet : bulletList) {
-                bullet.render(gc);
-            }
-        }
-
-        public void add(Bullet bullet) {
-            bulletList.add(bullet);
-        }
-
-        public void remove(Bullet bullet) {
-            bulletList.remove(bullet);
-        }
-
-        public void removeAll() {
-            bulletList.clear();
-        }
-
-        public List<Bullet> getBullets() {
-            return bulletList;
-        }
-
-        public void bindFunction(Sprite sprite, Consumer<Bullet> consumer) {
-            consumers.add(new Pair<>(sprite, consumer));
-        }
-
-        public void removeConsumer(Sprite sprite) {
-            consumers.removeIf(pair -> pair.getKey() == sprite);
-        }
     }
 
 }

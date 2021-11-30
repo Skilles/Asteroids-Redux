@@ -1,4 +1,4 @@
-package cs1302.game.api;
+package cs1302.game.content.sprites;
 
 import javafx.geometry.Point2D;
 import javafx.scene.canvas.GraphicsContext;
@@ -12,8 +12,8 @@ import java.util.Set;
 
 public class Asteroid extends PhysicSprite {
 
-    static final double MAX_ROTATION_VELOCITY = 1;
-    static final double MAX_VELOCITY = 500;
+    public static final double MAX_ROTATION_VELOCITY = 1;
+    public static final double MAX_VELOCITY = 500;
 
     private static final Random rng = new Random();
 
@@ -81,7 +81,7 @@ public class Asteroid extends PhysicSprite {
         return size;
     }
 
-    Set<Asteroid> getChildren() {
+    public Set<Asteroid> getChildren() {
         Set<Asteroid> splitList = new HashSet<>();
         if (size == Size.TINY) {
             return splitList;

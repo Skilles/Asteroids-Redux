@@ -1,4 +1,4 @@
-package cs1302.game.api;
+package cs1302.game.content;
 
 import javafx.scene.canvas.GraphicsContext;
 

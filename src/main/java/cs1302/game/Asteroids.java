@@ -1,8 +1,8 @@
 package cs1302.game;
 
-import cs1302.game.api.AsteroidManager;
-import cs1302.game.api.HUDManager;
-import cs1302.game.api.Player;
+import cs1302.game.content.AsteroidManager;
+import cs1302.game.content.HUDManager;
+import cs1302.game.content.sprites.Player;
 import javafx.scene.input.KeyCode;
 import javafx.scene.paint.Color;
 import javafx.stage.Stage;

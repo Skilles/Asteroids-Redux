@@ -1,4 +1,4 @@
-package cs1302.game.api;
+package cs1302.game.content.sprites;
 
 public abstract class PhysicSprite extends Sprite {
 

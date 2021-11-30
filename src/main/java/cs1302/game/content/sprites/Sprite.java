@@ -1,4 +1,4 @@
-package cs1302.game.api;
+package cs1302.game.content.sprites;
 
 import javafx.geometry.Bounds;
 import javafx.scene.canvas.GraphicsContext;

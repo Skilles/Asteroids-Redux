@@ -1,4 +1,4 @@
-package cs1302.game.api;
+package cs1302.game.content;
 
 import cs1302.game.Game;
 import javafx.scene.control.Button;

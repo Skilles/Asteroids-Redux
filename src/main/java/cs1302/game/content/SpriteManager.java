@@ -1,5 +1,6 @@
-package cs1302.game.api;
+package cs1302.game.content;
 
+import cs1302.game.content.sprites.Sprite;
 import javafx.scene.canvas.GraphicsContext;
 
 import java.util.ArrayList;

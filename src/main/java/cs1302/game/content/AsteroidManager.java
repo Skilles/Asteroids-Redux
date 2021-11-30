@@ -1,6 +1,10 @@
-package cs1302.game.api;
+package cs1302.game.content;
 
 import cs1302.game.Game;
+import cs1302.game.content.sprites.Asteroid;
+import cs1302.game.content.sprites.PhysicSprite;
+import cs1302.game.content.sprites.Player;
+import cs1302.game.content.sprites.Sprite;
 import javafx.scene.canvas.GraphicsContext;
 
 import java.util.Random;
@@ -59,9 +63,7 @@ public class AsteroidManager extends SpriteManager {
             }
 
             return collide;
-        }).forEach(other -> {
-            asteroid.collide((PhysicSprite) other);
-        });
+        }).forEach(other -> asteroid.collide((PhysicSprite) other));
         final boolean intersect = intersects.get();
         asteroid.setCollidable(!intersect);
         return intersect;

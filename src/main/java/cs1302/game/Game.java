@@ -1,7 +1,7 @@
 package cs1302.game;
 
-import cs1302.game.api.MainMenu;
-import cs1302.game.api.Sprite;
+import cs1302.game.content.MainMenu;
+import cs1302.game.content.sprites.Sprite;
 import javafx.animation.AnimationTimer;
 import javafx.geometry.BoundingBox;
 import javafx.geometry.Bounds;
