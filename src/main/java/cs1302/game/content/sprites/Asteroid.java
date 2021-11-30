@@ -26,9 +26,8 @@ public class Asteroid extends PhysicSprite {
     }
 
     public Asteroid(Size size) {
-        super("file:resources/sprites/asteroid.png", size, size.getMassMultiplier() * 100);
+        super("file:resources/sprites/asteroid.png", size, getMass(size));
         this.size = size;
-        // this.mass += Math.random() * 50;
     }
 
     @Override
@@ -45,13 +44,6 @@ public class Asteroid extends PhysicSprite {
     @Override
     public void render(GraphicsContext gc) {
         super.render(gc);
-        // FIXME debug collisions
-        /*drawChildBoundary(gc, Color.BEIGE);
-        if (collided) {
-            drawBoundary(gc, Color.YELLOW);
-        } else {
-            drawBoundary(gc, Color.GREEN);
-        }*/
     }
 
     private void drawChildBoundary(GraphicsContext gc, Color color) {
@@ -83,7 +75,7 @@ public class Asteroid extends PhysicSprite {
 
     public Set<Asteroid> getChildren() {
         Set<Asteroid> splitList = new HashSet<>();
-        if (size == Size.TINY) {
+        if (size.ordinal() <= 1) {
             return splitList;
         }
 
@@ -128,5 +120,9 @@ public class Asteroid extends PhysicSprite {
 
         child.setPosition(newPointX, newPointY);
         return child;
+    }
+
+    private static double getMass(Size size) {
+        return (1 + size.ordinal()) * 330;
     }
 }

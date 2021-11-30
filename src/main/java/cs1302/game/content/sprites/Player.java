@@ -20,7 +20,7 @@ public class Player extends Sprite {
     private int health = 5;
 
     public Player() {
-        super("file:resources/sprites/spaceship.png", Size.SMALL);
+        super("file:resources/sprites/spaceship.png", Size.SMALL, 300);
         hAcceleration = 500;
         vAcceleration = 500;
         bulletManager = new BulletManager();
