@@ -1,5 +1,6 @@
 package cs1302.game.api;
 
+import javafx.geometry.Point2D;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
@@ -12,7 +13,7 @@ import java.util.Set;
 public class Asteroid extends PhysicSprite {
 
     static final double MAX_ROTATION_VELOCITY = 1;
-    static final double MAX_VELOCITY = 50;
+    static final double MAX_VELOCITY = 500;
 
     private static final Random rng = new Random();
 
@@ -45,12 +46,12 @@ public class Asteroid extends PhysicSprite {
     public void render(GraphicsContext gc) {
         super.render(gc);
         // FIXME debug collisions
-        drawChildBoundary(gc, Color.BEIGE);
+        /*drawChildBoundary(gc, Color.BEIGE);
         if (collided) {
             drawBoundary(gc, Color.YELLOW);
         } else {
             drawBoundary(gc, Color.GREEN);
-        }
+        }*/
     }
 
     private void drawChildBoundary(GraphicsContext gc, Color color) {
@@ -91,14 +92,16 @@ public class Asteroid extends PhysicSprite {
 
         for (int i = 0; i < pieces; i++) {
             Asteroid asteroid = spawnChildInArea(getSpawnArea(), newSize);
-
-            // Check if the asteroid is colliding with another asteroid
-            if (splitList.stream().noneMatch(child -> child.intersects(asteroid))) {
+            asteroid.setCollidable(false);
+            // Check if the asteroid is colliding with another asteroid and if the distance between
+            // them is 5 pixels or less. TODO: Optimize this.
+            if (splitList.stream().noneMatch(child -> child.intersects(asteroid)
+                    && new Point2D(asteroid.positionX, asteroid.positionY).distance(child.positionX,
+                    child.positionY) < (child.width + asteroid.width) / 2 + 5)) {
                 splitList.add(asteroid);
             } else {
                 i--;
             }
-
         }
         return splitList;
     }

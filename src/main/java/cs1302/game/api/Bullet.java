@@ -2,7 +2,7 @@ package cs1302.game.api;
 
 public class Bullet extends Sprite {
 
-    private Sprite parent;
+    private final Sprite parent;
 
     public Bullet(Sprite parent, double force) {
         super("file:resources/sprites/longBullet.png", Size.TINY);
@@ -30,6 +30,10 @@ public class Bullet extends Sprite {
     @Override
     public void onKill() {
 
+    }
+
+    public Sprite getParent() {
+        return parent;
     }
 
 }

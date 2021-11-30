@@ -4,6 +4,7 @@ import cs1302.game.Game;
 import javafx.scene.canvas.GraphicsContext;
 
 import java.util.Random;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 public class AsteroidManager extends SpriteManager {
 
@@ -40,11 +41,30 @@ public class AsteroidManager extends SpriteManager {
             } else {
                 asteroid.collided = false;
             }
-
-            sprites.stream().filter(other -> other instanceof PhysicSprite && other != sprite && asteroid.intersects(other)).forEach(other -> asteroid.collide((PhysicSprite) other));
+            // Collide asteroids
+            collideAsteroid(asteroid);
         }
         this.playerDead = playerDead;
         sprites.removeIf(sprite -> !sprite.isAlive());
+    }
+
+    private boolean collideAsteroid(Asteroid asteroid) {
+        AtomicBoolean intersects = new AtomicBoolean(false);
+        sprites.stream().filter(other -> {
+            boolean collide = other instanceof PhysicSprite
+                    && !other.equals(asteroid) && asteroid.intersects(other);
+
+            if (collide) {
+                intersects.set(true);
+            }
+
+            return collide;
+        }).forEach(other -> {
+            asteroid.collide((PhysicSprite) other);
+        });
+        final boolean intersect = intersects.get();
+        asteroid.setCollidable(!intersect);
+        return intersect;
     }
 
     /**
@@ -77,8 +97,8 @@ public class AsteroidManager extends SpriteManager {
 
     private void initializeAsteroid(Asteroid asteroid, Random rng) {
         // Generate a random velocity for the asteroid
-        double vx = (rng.nextDouble() * 2 - 1) * Asteroid.MAX_VELOCITY;
-        double vy = (rng.nextDouble() * 2 - 1) * Asteroid.MAX_VELOCITY;
+        double vx = (rng.nextDouble() * 2 - 1) * Asteroid.MAX_VELOCITY / (1 + Sprite.Size.values().length - asteroid.getSize().ordinal());
+        double vy = (rng.nextDouble() * 2 - 1) * Asteroid.MAX_VELOCITY / (1 + Sprite.Size.values().length - asteroid.getSize().ordinal());
 
         // Generate a random rotation for the asteroid
         double rotation = rng.nextDouble() * 360;
@@ -91,11 +111,12 @@ public class AsteroidManager extends SpriteManager {
 
         // Ensure the bullet despawns if it collides with the asteroid
         player.getBulletManager().bindFunction(asteroid, bullet -> {
-            if (bullet.intersects(asteroid)) {
+            if (bullet.isAlive() && bullet.intersects(asteroid)) {
                 for (Asteroid child: asteroid.getChildren()) {
                     initializeAsteroid(child, rng);
                     addSprite(child);
                 }
+                ((Player) bullet.getParent()).getHudManager().addScore(asteroid.getSize().getScore());
                 asteroid.kill();
                 bullet.kill();
             }
