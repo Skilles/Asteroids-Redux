@@ -1,5 +1,6 @@
 package cs1302.game;
 
+import cs1302.game.api.MainMenu;
 import cs1302.game.api.Sprite;
 import javafx.animation.AnimationTimer;
 import javafx.geometry.BoundingBox;
@@ -31,16 +32,21 @@ public abstract class Game extends StackPane {
     private long delta;
     private double elapsedTime;
 
-    public Game(Stage stage, int width, int height) {
+    protected MainMenu mainMenu;
+    private String title;
+
+    public Game(String title, Stage stage, int width, int height) {
         WIDTH = width;
         HEIGHT = height;
-        init(stage);
+        init(title, stage);
     }
 
-    public void init(Stage stage) {
+    public void init(String title, Stage stage) {
         this.canvas = new Canvas(WIDTH, HEIGHT);
         this.ctx = canvas.getGraphicsContext2D();
         this.bounds = new BoundingBox(0, 0, WIDTH, HEIGHT);
+        this.title = title;
+        this.mainMenu = new MainMenu(this);
         Sprite.setBounds(bounds);
         setMinWidth(WIDTH);
         setMinHeight(HEIGHT);
@@ -48,7 +54,7 @@ public abstract class Game extends StackPane {
         stage.addEventFilter(KeyEvent.KEY_PRESSED, this::handleKeyPressed);
         stage.addEventFilter(KeyEvent.KEY_RELEASED, this::handleKeyReleased);
 
-        getChildren().addAll(canvas);
+        getChildren().addAll(canvas, mainMenu);
 
         this.timer = new AnimationTimer() {
             @Override
@@ -68,6 +74,7 @@ public abstract class Game extends StackPane {
     }
 
     public void render(long currentNanoTime) {
+        // clear the canvas
         ctx.clearRect(0, 0, WIDTH, HEIGHT);
     }
 
@@ -124,6 +131,14 @@ public abstract class Game extends StackPane {
 
     protected double elapsedTime() {
         return elapsedTime;
+    }
+
+    public String getTitle() {
+        return title;
+    }
+
+    public MainMenu getMainMenu() {
+        return mainMenu;
     }
 
 }

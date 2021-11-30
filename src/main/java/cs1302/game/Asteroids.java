@@ -17,14 +17,17 @@ public class Asteroids extends Game {
     HUDManager hudManager;
 
     public Asteroids(Stage stage, int width, int height) {
-        super(stage, width, height);
+        super("Asteroids", stage, width, height);
     }
 
     @Override
-    public void init(Stage stage) {
-        super.init(stage);
+    public void init(String title, Stage stage) {
+        super.init(title, stage);
+        // Set the background to black
+        this.setStyle("-fx-background-color: black");
+        // TODO: make stars
+
         rng = new Random(123);
-        ctx.setGlobalAlpha(0.6);
         player = new Player();
         player.setPosition(300, 300);
 
@@ -72,6 +75,12 @@ public class Asteroids extends Game {
         isKeyPressed(KeyCode.S, () -> player.decelerate(delta));
 
         isKeyPressed(KeyCode.SPACE, () -> player.shoot(delta));
+    }
+
+    @Override
+    public void play() {
+        super.play();
+        getChildren().remove(mainMenu);
     }
 
 }

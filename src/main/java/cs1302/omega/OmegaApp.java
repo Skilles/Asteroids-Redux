@@ -39,9 +39,6 @@ public class OmegaApp extends Application {
         stage.sizeToScene();
         stage.show();
 
-        // play the game
-        game.play();
-
     } // start
 
 } // OmegaApp
