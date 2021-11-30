@@ -64,8 +64,13 @@ public class AsteroidManager extends SpriteManager {
 
             return collide;
         }).forEach(other -> asteroid.collide((PhysicSprite) other));
+
+        // Asteroids start off as uncollidable to avoid colliding when they spawn
         final boolean intersect = intersects.get();
-        asteroid.setCollidable(!intersect);
+        if (!intersect) {
+            asteroid.setCollidable(true);
+        }
+
         return intersect;
     }
 
