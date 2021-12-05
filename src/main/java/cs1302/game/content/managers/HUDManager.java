@@ -68,5 +68,36 @@ public class HUDManager extends Manager {
         this.gameOver = gameOver;
     }
 
+    public void show(GraphicsContext ctx, String message, Color color) {
+        show(ctx, message, color, false);
+    }
+
+    public void show(GraphicsContext ctx, String message, Color color, boolean fadeIn) {
+        if (fadeIn) {
+            fadeIn(ctx, message, color);
+            return;
+        }
+        ctx.fillText(message, Globals.WIDTH / 2.0, Globals.HEIGHT / 2.0 + 30);
+    }
+
+    public void reset() {
+        score = 0;
+        gameOver = false;
+    }
+
+    double timer;
+    public void fadeIn(GraphicsContext ctx, String message, Color color) {
+        // Fade in a message over 3 seconds
+        if (timer < 3) {
+            timer += Globals.game.elapsedTime();
+            ctx.save();
+            ctx.setGlobalAlpha(timer / 2);
+            ctx.setFill(color);
+            ctx.fillText(message, Globals.WIDTH / 2.0, Globals.HEIGHT / 2.0 + 30);
+            ctx.restore();
+        } else {
+            ctx.fillText(message, Globals.WIDTH / 2.0, Globals.HEIGHT / 2.0 + 30);
+        }
+    }
 
 }

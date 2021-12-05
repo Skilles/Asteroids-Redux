@@ -68,8 +68,14 @@ public class Asteroids extends Game {
 
             player.brake(elapsedTime(), 200);
             player.update(elapsedTime());
-        } else if (isKeyPressed()) {
-            reset();
+        } else {
+            deathTime += elapsedTime();
+            if (deathTime > 1) {
+                hudManager.show(ctx, "Press any key to restart", Color.DARKGREEN, true);
+                if (isKeyPressed()) {
+                    reset();
+                }
+            }
         }
     }
 
@@ -105,7 +111,12 @@ public class Asteroids extends Game {
     }
 
     public void reset() {
-        // TODO : reset the player, asteroids, menu, etc
+        pause();
+        player.reset();
+        asteroidManager.reset();
+        hudManager.reset();
+        mainMenu.main();
+        deathTime = 0;
     }
 
     @Override
