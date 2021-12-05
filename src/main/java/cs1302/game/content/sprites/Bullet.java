@@ -4,6 +4,9 @@ public class Bullet extends Sprite {
 
     private final Sprite parent;
 
+    private static final int LIFE_TIME = 4;
+    private double lifeTime;
+
     public Bullet(Sprite parent, double force) {
         super("file:resources/sprites/longBullet.png", Size.TINY);
         double cos = Math.cos(parent.radAngle - 1.57);
@@ -18,18 +21,22 @@ public class Bullet extends Sprite {
     }
 
     @Override
-    protected boolean wrapAround() {
-        return centerX > maxWidth + width || centerX < 0 || centerY > maxHeight + height || centerY < 0;
-    }
-
-    @Override
     protected void onOffScreen() {
-        kill();
+
     }
 
     @Override
     public void onKill() {
 
+    }
+
+    @Override
+    public void update(double delta) {
+        super.update(delta);
+        lifeTime += delta;
+        if (lifeTime > LIFE_TIME) {
+            kill();
+        }
     }
 
     public Sprite getParent() {
