@@ -37,6 +37,7 @@ public class OmegaApp extends Application {
         stage.setScene(scene);
         stage.setOnCloseRequest(event -> Platform.exit());
         stage.sizeToScene();
+        stage.setResizable(false);
         stage.show();
 
     } // start
