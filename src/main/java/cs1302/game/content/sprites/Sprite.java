@@ -21,7 +21,7 @@ public abstract class Sprite {
     double width;
     double height;
 
-    private boolean alive;
+    protected boolean alive;
 
     static Bounds bounds;
 
@@ -59,6 +59,9 @@ public abstract class Sprite {
     public void setPosition(double x, double y) {
         positionX = x;
         positionY = y;
+
+        centerX = positionX + width / 2;
+        centerY = positionY + height / 2;
     }
 
     public void setVelocity(double x, double y, double r) {
@@ -72,12 +75,8 @@ public abstract class Sprite {
         velocityY += y;
     }
 
-    public void update(double time) {
-        positionX += velocityX * time;
-        positionY += velocityY * time;
-
-        centerX = positionX + width / 2;
-        centerY = positionY + height / 2;
+    public void update(double delta) {
+        setPosition(positionX + velocityX * delta, positionY + velocityY * delta);
 
         setRotation(angle + velocityR);
 
@@ -194,7 +193,7 @@ public abstract class Sprite {
         }
 
         public int getScore() {
-            return (int) (Math.pow(1 + values().length - ordinal(), 2) * 100);
+            return (int) (Math.pow(1 + values().length - ordinal(), 2) * 50);
         }
     }
 

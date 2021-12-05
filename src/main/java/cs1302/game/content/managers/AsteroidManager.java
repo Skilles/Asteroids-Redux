@@ -1,6 +1,6 @@
-package cs1302.game.content;
+package cs1302.game.content.managers;
 
-import cs1302.game.Game;
+import cs1302.game.content.Globals;
 import cs1302.game.content.sprites.Asteroid;
 import cs1302.game.content.sprites.PhysicSprite;
 import cs1302.game.content.sprites.Player;
@@ -12,7 +12,11 @@ import java.util.concurrent.atomic.AtomicBoolean;
 
 public class AsteroidManager extends SpriteManager {
 
-    private Player player;
+    private final Player player;
+
+    public static final int NUM_ASTEROIDS = 8;
+
+    private static final Random rng = new Random(123);
 
     public AsteroidManager(Player player) {
         super();
@@ -20,7 +24,12 @@ public class AsteroidManager extends SpriteManager {
     }
 
     @Override
-    public void drawSprites(GraphicsContext ctx) {
+    protected void init() {
+        Globals.setAsteroidManager(this);
+    }
+
+    @Override
+    public void render(GraphicsContext ctx) {
         for (Sprite sprite : sprites) {
             Asteroid asteroid = (Asteroid) sprite;
 
@@ -30,8 +39,8 @@ public class AsteroidManager extends SpriteManager {
     }
 
     @Override
-    public void updateSprites(double delta) {
-        super.updateSprites(delta);
+    public void update(double delta) {
+        super.update(delta);
         for (Sprite sprite : sprites) {
             Asteroid asteroid = (Asteroid) sprite;
 
@@ -46,7 +55,7 @@ public class AsteroidManager extends SpriteManager {
         sprites.removeIf(sprite -> !sprite.isAlive());
     }
 
-    private boolean collideAsteroid(Asteroid asteroid) {
+    private void collideAsteroid(Asteroid asteroid) {
         AtomicBoolean intersects = new AtomicBoolean(false);
         sprites.stream().filter(other -> {
             boolean collide = other instanceof PhysicSprite
@@ -65,20 +74,16 @@ public class AsteroidManager extends SpriteManager {
             asteroid.setCollidable(true);
         }
 
-        return intersect;
     }
 
     /**
      * Generates a certain amount of asteroids randomly throughout the game.
-     *
-     * @param rng the random number generator
-     * @param numAsteroids how many asteroids to generate
      */
-    public void generateAsteroids(int numAsteroids, Random rng) {
-        for (int i = 0; i < numAsteroids; i++) {
+    public void generateAsteroids() {
+        for (int i = 0; i < NUM_ASTEROIDS; i++) {
             // Generate a random position for the asteroid
-            double x = rng.nextDouble() * Game.WIDTH;
-            double y = rng.nextDouble() * Game.HEIGHT;
+            double x = rng.nextDouble() * Globals.WIDTH;
+            double y = rng.nextDouble() * Globals.HEIGHT;
 
             // Generate a random size for the asteroid
             Sprite.Size size = Sprite.Size.values()[2 + rng.nextInt(Sprite.Size.values().length - 2)];
@@ -96,6 +101,11 @@ public class AsteroidManager extends SpriteManager {
 
     }
 
+    public void spawnAsteroid(Asteroid asteroid) {
+        initializeAsteroid(asteroid, rng);
+        sprites.add(asteroid);
+    }
+
     private void initializeAsteroid(Asteroid asteroid, Random rng) {
         // Generate a random velocity for the asteroid
         double vx = (rng.nextDouble() * 2 - 1) * Asteroid.MAX_VELOCITY / (1 + Sprite.Size.values().length - asteroid.getSize().ordinal());
@@ -111,17 +121,22 @@ public class AsteroidManager extends SpriteManager {
         asteroid.setRotation(rotation);
 
         // Ensure the bullet despawns if it collides with the asteroid
-        player.getBulletManager().bindFunction(asteroid, bullet -> {
+        Globals.bulletManager.bindFunction(asteroid, bullet -> {
             if (bullet.isAlive() && bullet.intersects(asteroid)) {
                 for (Asteroid child: asteroid.getChildren()) {
                     initializeAsteroid(child, rng);
                     addSprite(child);
                 }
-                ((Player) bullet.getParent()).getHudManager().addScore(asteroid.getSize().getScore());
+                Globals.hudManager.addScore(asteroid.getSize().getScore());
                 asteroid.kill();
                 bullet.kill();
             }
         });
+    }
+
+    public void reset() {
+        sprites.clear();
+        generateAsteroids();
     }
 
 }

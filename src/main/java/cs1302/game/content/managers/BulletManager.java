@@ -1,5 +1,6 @@
-package cs1302.game.content;
+package cs1302.game.content.managers;
 
+import cs1302.game.content.Globals;
 import cs1302.game.content.sprites.Bullet;
 import cs1302.game.content.sprites.Sprite;
 import javafx.scene.canvas.GraphicsContext;
@@ -9,15 +10,20 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Consumer;
 
-public class BulletManager {
+public class BulletManager extends Manager {
 
     private final List<Bullet> bulletList;
 
     private final List<Pair<Sprite, Consumer<Bullet>>> consumers;
 
     public BulletManager() {
+        super();
         bulletList = new ArrayList<>();
         consumers = new ArrayList<>();
+    }
+
+    protected void init() {
+        Globals.setBulletManager(this);
     }
 
     public void update(double delta) {

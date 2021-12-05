@@ -23,7 +23,7 @@ public class MainMenu extends VBox {
         setAlignment(javafx.geometry.Pos.CENTER);
         setSpacing(10);
 
-        double buttonWidth = Globals.WIDTH / 10;
+        int buttonWidth = Globals.WIDTH / 10;
 
         Button playButton = new Button("Play");
         playButton.setId("play-button");

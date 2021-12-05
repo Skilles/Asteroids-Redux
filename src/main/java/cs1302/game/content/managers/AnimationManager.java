@@ -10,7 +10,7 @@ import java.util.List;
 
 public class AnimationManager extends Manager {
 
-    private List<Animation> animations;
+    private final List<Animation> animations;
 
     public AnimationManager() {
         super();

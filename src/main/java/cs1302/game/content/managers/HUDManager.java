@@ -1,10 +1,13 @@
-package cs1302.game.content;
+package cs1302.game.content.managers;
 
 import cs1302.game.Game;
+import cs1302.game.content.Globals;
 import cs1302.game.content.sprites.Player;
 import javafx.scene.canvas.GraphicsContext;
+import javafx.scene.paint.Color;
+import javafx.scene.text.Font;
 
-public class HUDManager extends SpriteManager {
+public class HUDManager extends Manager {
 
     private long score;
 
@@ -12,21 +15,28 @@ public class HUDManager extends SpriteManager {
 
     public HUDManager() {
         super();
-        score = 0;
+        this.score = 0;
     }
 
-    public void update(double delta) {
-        super.updateSprites(delta);
+    @Override
+    protected void init() {
+        Globals.setHudManager(this);
     }
 
+    @Override
     public void render(GraphicsContext ctx) {
-        super.drawSprites(ctx);
+        ctx.setTextAlign(javafx.scene.text.TextAlignment.LEFT);
         drawScore(ctx);
         drawFPS(ctx);
+        drawHealth(ctx, Globals.game.getPlayer());
+        ctx.setTextAlign(javafx.scene.text.TextAlignment.CENTER);
         if (gameOver) {
-            int x = Game.WIDTH / 2 - 35;
-            int y = Game.HEIGHT / 2;
+            int x = Globals.WIDTH / 2;
+            int y = Globals.HEIGHT / 2;
+            ctx.save();
+            ctx.setFont(new Font("Calibri", 30));
             ctx.fillText("Game Over", x, y);
+            ctx.restore();
         }
     }
 

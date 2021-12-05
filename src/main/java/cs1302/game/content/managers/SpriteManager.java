@@ -1,4 +1,4 @@
-package cs1302.game.content;
+package cs1302.game.content.managers;
 
 import cs1302.game.content.sprites.Sprite;
 import javafx.scene.canvas.GraphicsContext;
@@ -8,13 +8,14 @@ import java.util.List;
 import java.util.Queue;
 import java.util.concurrent.LinkedBlockingQueue;
 
-public abstract class SpriteManager {
+public abstract class SpriteManager extends Manager {
 
     protected final List<Sprite> sprites;
 
     private final Queue<Sprite> spritesToAdd;
 
     public SpriteManager() {
+        super();
         sprites = new ArrayList<>();
         spritesToAdd = new LinkedBlockingQueue<>();
     }
@@ -47,13 +48,13 @@ public abstract class SpriteManager {
         return sprites.get(index);
     }
 
-    public void updateSprites(double delta) {
+    public void update(double delta) {
         while (!spritesToAdd.isEmpty()) {
             sprites.add(spritesToAdd.remove());
         }
     }
 
-    public void drawSprites(GraphicsContext ctx) {
+    public void render(GraphicsContext ctx) {
         for (Sprite sprite : sprites) {
             sprite.render(ctx);
         }

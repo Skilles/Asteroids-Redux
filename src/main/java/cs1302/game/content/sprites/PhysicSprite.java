@@ -61,8 +61,8 @@ public abstract class PhysicSprite extends Sprite {
     }
 
     @Override
-    public void update(double time) {
-        super.update(time);
+    public void update(double delta) {
+        super.update(delta);
     }
 
 }

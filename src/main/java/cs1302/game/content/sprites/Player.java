@@ -1,7 +1,6 @@
 package cs1302.game.content.sprites;
 
-import cs1302.game.content.BulletManager;
-import cs1302.game.content.HUDManager;
+import cs1302.game.content.Globals;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.effect.ColorAdjust;
 import javafx.scene.shape.Circle;
@@ -12,15 +11,12 @@ public class Player extends PhysicSprite {
     private final double hAcceleration;
     private final double vAcceleration;
 
-    private final BulletManager bulletManager;
-    private HUDManager hudManager;
-
     // FIXME need cooldown manager tied to delta
-    private static final int SHOOT_COOLDOWN = 50;
+    private static final int SHOOT_COOLDOWN = 75;
     private int currentShootCooldown = 0;
 
     private static final int MAX_HEALTH = 5;
-    private static final int DAMAGE_COOLDOWN = 100;
+    private static final int DAMAGE_COOLDOWN = 250;
     private int currentDamageCooldown = 0;
     private int health = 3;
 
@@ -28,7 +24,6 @@ public class Player extends PhysicSprite {
         super("file:resources/sprites/spaceship.png", Size.SMALL, 300);
         hAcceleration = 500;
         vAcceleration = 500;
-        bulletManager = new BulletManager();
     }
 
     public void turnRight(double delta) {
@@ -39,14 +34,14 @@ public class Player extends PhysicSprite {
         addRotation(-150 * delta);
     }
 
-    public void accelerate(double time) {
-        velocityX += hAcceleration * Math.sin(radAngle) * time;
-        velocityY -= vAcceleration * Math.cos(radAngle) * time;
+    public void accelerate(double delta) {
+        velocityX += hAcceleration * Math.sin(radAngle) * delta;
+        velocityY -= vAcceleration * Math.cos(radAngle) * delta;
     }
 
-    public void decelerate(double time) {
-        velocityX -= hAcceleration * Math.sin(radAngle) * time;
-        velocityY += vAcceleration * Math.cos(radAngle) * time;
+    public void decelerate(double delta) {
+        velocityX -= hAcceleration * Math.sin(radAngle) * delta;
+        velocityY += vAcceleration * Math.cos(radAngle) * delta;
     }
 
     public void brake(double delta, double force) {
@@ -58,16 +53,14 @@ public class Player extends PhysicSprite {
     }
 
     @Override
-    public void update(double time) {
-        super.update(time);
+    public void update(double delta) {
+        super.update(delta);
         if (currentShootCooldown > 0) {
-            currentShootCooldown--;
+            currentShootCooldown -= delta;
         }
         if (currentDamageCooldown > 0) {
-            currentDamageCooldown--;
+            currentDamageCooldown -= delta;
         }
-
-        bulletManager.update(time);
     }
 
     @Override
@@ -81,7 +74,6 @@ public class Player extends PhysicSprite {
         }
 
         // drawBoundary(gc, Color.AQUA);
-        bulletManager.render(gc);
     }
 
     @Override
@@ -99,29 +91,14 @@ public class Player extends PhysicSprite {
 
     @Override
     public void onKill() {
-        hudManager.setGameOver(true);
-    }
-
-    public void setHudManager(HUDManager hudManager) {
-        if (this.hudManager != null) {
-            throw new RuntimeException("HUD Manager already set!");
-        }
-        this.hudManager = hudManager;
+        Globals.hudManager.setGameOver(true);
     }
 
     public void shoot(double delta) {
         if (currentShootCooldown == 0) {
             currentShootCooldown = SHOOT_COOLDOWN;
-            bulletManager.add(new Bullet(this, 300));
+            Globals.bulletManager.add(new Bullet(this, 300));
         }
-    }
-
-    public BulletManager getBulletManager() {
-        return bulletManager;
-    }
-
-    public HUDManager getHudManager() {
-        return hudManager;
     }
 
     public void damage(int damage) {
@@ -142,6 +119,14 @@ public class Player extends PhysicSprite {
 
     public int getHealth() {
         return health;
+    }
+
+    public void reset() {
+        health = MAX_HEALTH;
+        currentDamageCooldown = 0;
+        positionX = 720;
+        positionY = 360;
+        alive = true;
     }
 
 }
