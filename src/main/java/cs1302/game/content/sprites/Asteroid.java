@@ -1,6 +1,6 @@
 package cs1302.game.content.sprites;
 
-import javafx.geometry.Point2D;
+import cs1302.game.content.animations.Explosion;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
@@ -31,8 +31,8 @@ public class Asteroid extends PhysicSprite {
     }
 
     @Override
-    public void update(double time) {
-        super.update(time);
+    public void update(double delta) {
+        super.update(delta);
     }
 
     @Override
@@ -66,7 +66,7 @@ public class Asteroid extends PhysicSprite {
 
     @Override
     public void onKill() {
-
+        explode();
     }
 
     public Size getSize() {
@@ -99,7 +99,7 @@ public class Asteroid extends PhysicSprite {
     }
 
     public Shape getSpawnArea() {
-        return new Circle(positionX, positionY, width / 2);
+        return new Circle(positionX, positionY, width / 3);
     }
 
     private static Asteroid spawnChildInArea(Shape shape, Size size) {
@@ -124,5 +124,12 @@ public class Asteroid extends PhysicSprite {
 
     private static double getMass(Size size) {
         return (1 + size.ordinal()) * 330;
+    }
+
+    public void explode() {
+        // Kills and splits this asteroid into smaller ones
+
+        // Create a new explosion
+        new Explosion((int) positionX, (int) positionY, (float) width / 2.0f);
     }
 }
