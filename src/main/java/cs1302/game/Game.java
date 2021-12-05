@@ -1,5 +1,6 @@
 package cs1302.game;
 
+import cs1302.game.content.Globals;
 import cs1302.game.content.MainMenu;
 import cs1302.game.content.sprites.Sprite;
 import javafx.animation.AnimationTimer;
@@ -16,12 +17,12 @@ import java.util.BitSet;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import static cs1302.game.content.Globals.*;
+
 public abstract class Game extends StackPane {
 
     protected final Logger logger = Logger.getLogger("cs1302.game.Game");
 
-    public static int WIDTH;
-    public static int HEIGHT;
     public static int FPS;
 
     Canvas canvas;
@@ -38,8 +39,8 @@ public abstract class Game extends StackPane {
     private String title;
 
     public Game(String title, Stage stage, int width, int height) {
-        WIDTH = width;
-        HEIGHT = height;
+        Globals.setWidth(width);
+        Globals.setHeight(height);
         init(title, stage);
     }
 
@@ -115,6 +116,14 @@ public abstract class Game extends StackPane {
     } // isKeyPressed
 
     /**
+     * Return whether or not any key is pressed.
+     * @return {@code true} if any key is pressed; otherwise {@code false}
+     */
+    protected final boolean isKeyPressed() {
+        return !keysPressed.isEmpty();
+    } // isKeyPressed
+
+    /**
      * Return whether or not a key is currently pressed. If the key is pressed, then
      * {@code handler.run()} is run on the calling thread before the method returns.
      * @param key the key code to check
@@ -136,9 +145,10 @@ public abstract class Game extends StackPane {
 
     public void pause() {
         timer.stop();
+        ctx.clearRect(0, 0, WIDTH, HEIGHT);
     }
 
-    protected double elapsedTime() {
+    public double elapsedTime() {
         return elapsedTime;
     }
 

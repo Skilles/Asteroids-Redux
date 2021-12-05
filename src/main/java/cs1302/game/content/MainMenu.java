@@ -18,12 +18,12 @@ public class MainMenu extends VBox {
     }
 
     private void init() {
-        setMinSize(Game.WIDTH, Game.HEIGHT);
-        setPrefSize(Game.WIDTH, Game.HEIGHT);
+        setMinSize(Globals.WIDTH, Globals.HEIGHT);
+        setPrefSize(Globals.WIDTH, Globals.HEIGHT);
         setAlignment(javafx.geometry.Pos.CENTER);
         setSpacing(10);
 
-        double buttonWidth = Game.WIDTH / 10;
+        double buttonWidth = Globals.WIDTH / 10;
 
         Button playButton = new Button("Play");
         playButton.setId("play-button");
@@ -56,8 +56,10 @@ public class MainMenu extends VBox {
         return titleText;
     }
 
-    private void main() {
-        game.getChildren().remove(1);
+    public void main() {
+        if (game.getChildren().size() > 1) {
+            game.getChildren().remove(1);
+        }
         game.getChildren().add(1, game.getMainMenu());
     }
 
@@ -79,8 +81,8 @@ public class MainMenu extends VBox {
 
     class TextMenu extends VBox {
         TextMenu(String title, String text) {
-            setMinSize(Game.WIDTH, Game.HEIGHT);
-            setPrefSize(Game.WIDTH, Game.HEIGHT);
+            setMinSize(Globals.WIDTH, Globals.HEIGHT);
+            setPrefSize(Globals.WIDTH, Globals.HEIGHT);
             setAlignment(javafx.geometry.Pos.CENTER);
             setSpacing(10);
 

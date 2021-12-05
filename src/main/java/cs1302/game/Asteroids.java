@@ -27,9 +27,10 @@ public class Asteroids extends Game {
     @Override
     public void init(String title, Stage stage) {
         super.init(title, stage);
+        Globals.setGame(this);
         // Set the background color and load the background image
         setStyle("-fx-background-color: black");
-        background = new Image("file:resources/bg.png", WIDTH, HEIGHT, false, true);
+        background = new Image("file:resources/bg.png", Globals.WIDTH, Globals.HEIGHT, false, true);
 
         rng = new Random(123);
         player = new Player();
