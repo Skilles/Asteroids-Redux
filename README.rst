@@ -2,26 +2,26 @@
 .. project information
 .. |title| replace:: Omega
 .. |slug| replace:: **cs1302-omega**
-.. |semester| replace:: Spring 2021
-.. |version| replace:: v2021.sp
+.. |semester| replace:: Fall 2021
+.. |version| replace:: v2021.fa
 .. |team_size| replace:: 1
 .. |banner| image:: https://github.com/cs1302uga/cs1302-omega/raw/main/resources/readme-banner.png
    :alt: Image from page 400 of "The Palm of Alpha Tau Omega" (1880)
 
 .. deadlines
-.. |deadline1| replace:: SAT 2021-05-08 (MAY 08) @ 03:30 PM EST
-.. |deadline2| replace:: SUN 2021-05-09 (MAY 09) @ 03:30 PM EST
-.. |deadline3| replace:: MON 2021-05-10 (MAY 10) @ 03:30 PM EST
+.. |deadline1| replace:: MON 2021-12-13 (DEC 13) @ 06:30 PM EST
+.. |deadline2| replace:: TUE 2021-12-14 (DEC 14) @ 06:30 PM EST
+.. |deadline3| replace:: WED 2021-12-15 (DEC 15) @ 06:30 PM EST
 
 .. deadline section links
-.. _deadline1: #deadline-option-1-sat-2021-04-08-may-08--1155-pm-est
-.. _deadline2: #deadline-option-2-sun-2021-05-09-may-09--1155-pm-est
-.. _deadline3: #deadline-option-3-mon-2021-05-10-may-10--1155-pm-est
+.. _deadline1: #deadline-option-1-mon-2021-12-13-dec-13--0630-pm-est
+.. _deadline2: #deadline-option-2-tue-2021-12-14-dec-14--0630-pm-est
+.. _deadline3: #deadline-option-3-wed-2021-12-15-dec-15--0630-pm-est
 
 .. notices (need to manually update the urls)
 .. |team_size_notice| image:: https://img.shields.io/badge/Team%20Size-1-informational
    :alt: Team Size |team_size|
-.. |approval_notice| image:: https://img.shields.io/badge/Approved%20for-Spring%202021-success
+.. |approval_notice| image:: https://img.shields.io/badge/Approved%20for-Fall%202021-blue
    :alt: Approved for: |version|
 
 CSCI 1302 - |title| |version|
@@ -54,9 +54,9 @@ after the final date and time listed.
 =====  ===============
 Bonus  Deadline Option
 =====  ===============
-| +10  |deadline1|_
-|  +5  |deadline2|_
-|  +0  |deadline3|_
+ +10   |deadline1|_
+  +5   |deadline2|_
+  +0   |deadline3|_
 =====  ===============
 
 Academic Honesty
@@ -326,18 +326,22 @@ Final Project == Final Exam
    **the final project that described by this document will be treated as the final
    examination** since the grade and feedback that a student receives for this
    assignment is a summative evaluation of the entire term's work.
+   
+Final Project Grade Not Dropped
+   Since this Final Project is your Final Exam, the grade that you earn for your
+   final project submission does not qualify as a grade that can be dropped.
 
 Final Submission Deadline
    Please take care to note the date/time for final submission deadline,
-   **Deadline 3**. In particular, the deadline time is 03:30 PM, which is earlier
+   **Deadline 3**. In particular, the deadline time is 06:30 PM, which is earlier
    in the day compared to previous projects.
 
 Amended Late Work Policy
    For both logistical and policy-related reasons, the usual late work policy
    will not apply for this project, and **no late submissions will be accepted after
-   11:59:59 PM on MON 2021-05-10 (May 10)**.
+   11:59:59 PM on WED 2021-12-15 (Dec 15)**.
    You can still submit late for partial credit, but late submissions will only be
-   accepted between **03:30:01 PM -- 11:59:59 PM on MON 2021-05-10 (May 10)**;
+   accepted between **06:30:01 PM -- 11:59:59 PM on MON 2021-12-15 (Dec 15)**;
    submissions received during that time frame will incur the standard
    penalty for one day late. Final submissions received after the acceptance
    window will not be graded.
@@ -369,7 +373,7 @@ Working on a Local Machine
 
    * **Apache Maven 3.8.1**
         https://maven.apache.org/
-   * **Java 11.0.10** (vendor: Oracle Corporation; **not OpenJDK**)
+   * **Java 11.0.12** (vendor: Oracle Corporation; **not OpenJDK**)
         https://www.oracle.com/java/technologies/javase-jdk11-downloads.html
    * **OpenJFX 11.0.2** (note: should get handled by Maven)
          https://gluonhq.com/products/javafx/
@@ -398,8 +402,9 @@ in "|ssh_keys|_" to setup your public and private key pair on Odin and GitHub.
       private repository you created on GitHib.
 
 2. Add the course instructors instructors as collaborators to your private
-   GitHub repository using the instructions provided in the |reading_github_setup|_
-   reading. Here are the usernames for the course instructors.
+   GitHub repository using the instructions provided 
+   `here <https://docs.github.com/en/account-and-profile/setting-up-and-managing-your-github-user-account/managing-access-to-your-personal-repositories/inviting-collaborators-to-a-personal-repository>`__. 
+   The usernames for the course instructors are listed below.
 
    * |mepcotterell|_ -- Dr. Cotterell
    * |bjb211|_ -- Dr. Barnes
