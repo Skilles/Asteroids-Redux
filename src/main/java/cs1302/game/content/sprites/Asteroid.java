@@ -79,21 +79,13 @@ public class Asteroid extends PhysicSprite {
             return splitList;
         }
 
-        int pieces = rng.nextInt(3) + 1;
+        int pieces = rng.nextInt(2) + 1;
         Size newSize = Size.values()[size.ordinal() - 1];
 
         for (int i = 0; i < pieces; i++) {
             Asteroid asteroid = spawnChildInArea(getSpawnArea(), newSize);
             asteroid.setCollidable(false);
-            // Check if the asteroid is colliding with another asteroid and if the distance between
-            // them is 5 pixels or less. TODO: Optimize this.
-            if (splitList.stream().noneMatch(child -> child.intersects(asteroid)
-                    && new Point2D(asteroid.positionX, asteroid.positionY).distance(child.positionX,
-                    child.positionY) < (child.width + asteroid.width) / 2 + 5)) {
-                splitList.add(asteroid);
-            } else {
-                i--;
-            }
+            splitList.add(asteroid);
         }
         return splitList;
     }
