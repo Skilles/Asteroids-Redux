@@ -50,6 +50,7 @@ public class Explosion extends Animation {
         }
 
         Globals.animationManager.add(this);
+        Globals.soundManager.playSound(SoundManager.Sounds.EXPLOSION);
     }
 
     public void handle(long now) {

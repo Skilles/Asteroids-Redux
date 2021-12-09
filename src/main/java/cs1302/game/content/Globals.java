@@ -1,10 +1,7 @@
 package cs1302.game.content;
 
 import cs1302.game.Asteroids;
-import cs1302.game.content.managers.AnimationManager;
-import cs1302.game.content.managers.AsteroidManager;
-import cs1302.game.content.managers.BulletManager;
-import cs1302.game.content.managers.HUDManager;
+import cs1302.game.content.managers.*;
 
 public final class Globals {
     
@@ -22,6 +19,8 @@ public final class Globals {
     public static AsteroidManager asteroidManager;
     public static BulletManager bulletManager;
     public static HUDManager hudManager;
+    public static EnemyManager enemyManager;
+    public static SoundManager soundManager;
 
     /* Final method setters */
 
@@ -48,6 +47,16 @@ public final class Globals {
     public static void setHudManager(HUDManager hudManager) {
         checkDuplicate(Globals.hudManager, "HUDManager");
         Globals.hudManager = hudManager;
+    }
+
+    public static void setEnemyManager(EnemyManager enemyManager) {
+        checkDuplicate(Globals.enemyManager, "EnemyManager");
+        Globals.enemyManager = enemyManager;
+    }
+
+    public static void setSoundManager(SoundManager soundManager) {
+        checkDuplicate(Globals.soundManager, "SoundManager");
+        Globals.soundManager = soundManager;
     }
 
     /* Variable method setters */

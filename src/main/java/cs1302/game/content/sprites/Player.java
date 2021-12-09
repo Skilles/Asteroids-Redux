@@ -98,6 +98,7 @@ public class Player extends PhysicSprite {
         if (currentShootCooldown == 0) {
             currentShootCooldown = SHOOT_COOLDOWN;
             Globals.bulletManager.add(new Bullet(this, 300));
+            Globals.soundManager.playSound(SoundManager.Sounds.LASER_SHOOT);
         }
     }
 
@@ -105,6 +106,7 @@ public class Player extends PhysicSprite {
         if (currentDamageCooldown == 0) {
             currentDamageCooldown = DAMAGE_COOLDOWN;
             health -= damage;
+            Globals.soundManager.playSound(SoundManager.Sounds.SHIP_DAMAGE);
             if (health <= 0) {
                 kill();
             }
