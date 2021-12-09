@@ -1,6 +1,11 @@
 package cs1302.game.content.sprites;
 
+import cs1302.game.content.Globals;
+import cs1302.game.content.animations.Explosion;
+import javafx.geometry.BoundingBox;
 import javafx.geometry.Bounds;
+import javafx.geometry.Point2D;
+import javafx.geometry.Point3D;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.image.Image;
 import javafx.scene.paint.Color;
@@ -8,35 +13,29 @@ import javafx.scene.shape.Rectangle;
 import javafx.scene.shape.Shape;
 
 import java.util.Objects;
+import java.util.Random;
 
 public abstract class Sprite {
     private Image image;
-    double positionX;
-    double centerX;
-    double positionY;
-    double centerY;
-    double velocityX;
-    double velocityY;
-    double velocityR;
-    double width;
-    double height;
+    public double MIN_SPEED = 50;
+    public double MAX_SPEED = 500;
+    public static final Random rng = new Random();
 
     protected boolean alive;
 
-    static Bounds bounds;
-
-    final double maxWidth = 1280;
-    final double maxHeight = 720;
+    Point2D position;
+    Bounds bounds;
+    Point3D velocity;
 
     double angle;
     double radAngle;
 
     public Sprite() {
-        positionX = 0;
-        positionY = 0;
-        velocityX = 0;
-        velocityY = 0;
         alive = true;
+        position = new Point2D(0, 0);
+        velocity = new Point3D(0, 0, 0);
+        angle = 0;
+        bounds = new BoundingBox(0, 0, 0, 0);
     }
 
     public Sprite(String path, Size size) {
@@ -47,8 +46,7 @@ public abstract class Sprite {
 
     public void setImage(Image i) {
         image = i;
-        width = i.getWidth();
-        height = i.getHeight();
+        bounds = new BoundingBox(0, 0, i.getWidth(), i.getHeight());
     }
 
     public void setImage(String filename) {
@@ -57,39 +55,39 @@ public abstract class Sprite {
     }
 
     public void setPosition(double x, double y) {
-        positionX = x;
-        positionY = y;
-
-        centerX = positionX + width / 2;
-        centerY = positionY + height / 2;
+        position = new Point2D(x, y);
     }
 
     public void setVelocity(double x, double y, double r) {
-        velocityX = x;
-        velocityY = y;
-        velocityR = r;
+        velocity = new Point3D(x, y, r);
     }
 
-    public void addVelocity(double x, double y) {
-        velocityX += x;
-        velocityY += y;
+    public void addVelocity(double x, double y, double r) {
+        velocity = velocity.add(x, y, r);
     }
 
     public void update(double delta) {
-        setPosition(positionX + velocityX * delta, positionY + velocityY * delta);
+        // setPosition(positionX + velocityX * delta, positionY + velocityY * delta);
+        position = position.add(velocity.getX() * delta, velocity.getY() * delta);
 
-        setRotation(angle + velocityR);
+        addRotation(velocity.getZ() * delta);
 
-        if (wrapAround()) {
-            onOffScreen();
-        }
+        wrapAround();
+    }
+
+    public void randomVelocity() {
+        int negX = rng.nextBoolean() ? -1 : 1;
+        double vx = rng.nextDouble() * (MAX_SPEED - MIN_SPEED) + MIN_SPEED;
+        int negY = rng.nextBoolean() ? -1 : 1;
+        double vy = rng.nextDouble() * (MAX_SPEED - MIN_SPEED) + MIN_SPEED;
+        setVelocity(vx * negX, vy * negY, 0);
     }
 
     public void render(GraphicsContext gc) {
         gc.save();
-        gc.translate(positionX, positionY);
+        gc.translate(position.getX(), position.getY());
         gc.rotate(angle);
-        gc.translate(-(width / 2), -(height / 2));
+        gc.translate(-(bounds.getWidth() / 2), -(bounds.getHeight() / 2));
         gc.drawImage(image, 0, 0);
         gc.restore();
     }
@@ -106,7 +104,9 @@ public abstract class Sprite {
     }
 
     public Shape getBoundary() {
-        return new Rectangle(positionX - width / 2, positionY - height / 2, width, height);
+        final double w = bounds.getWidth();
+        final double h = bounds.getHeight();
+        return new Rectangle(position.getX() - w / 2, position.getY() - h / 2, w, h);
         // return new Rectangle2D(positionX, positionY, width, height);
     }
 
@@ -115,16 +115,9 @@ public abstract class Sprite {
         // return s.getBoundary().intersects( this.getBoundary() );
     }
 
-    public String toString() {
-        return " Position: [" + positionX + "," + positionY + "]"
-                + " Velocity: [" + velocityX + "," + velocityY + "]"
-                + " Rotation: [" + angle +  "]";
-    }
-
     public void resize(Size size) {
         image = new Image(image.getUrl(), size.width, size.height, true, true);
-        width = image.getWidth();
-        height = image.getHeight();
+        bounds = new BoundingBox(0, 0, image.getWidth(), image.getHeight());
     }
 
     public void setRotation(double angle) {
@@ -136,36 +129,63 @@ public abstract class Sprite {
         setRotation(this.angle + angle);
     }
 
-    public void addRotationVelocity(double velocity) {
-        velocityR += velocity;
-    }
-
     public void kill() {
         onKill();
         alive = false;
+    }
+
+    public void randomPositionOnEdge() {
+        switch (rng.nextInt(4)) {
+            // Top
+            case 0:
+                int x = rng.nextInt(Globals.WIDTH);
+                setPosition(x, 0);
+                break;
+            // Right
+            case 1:
+                int y = rng.nextInt(Globals.HEIGHT);
+                setPosition(Globals.WIDTH, y);
+                break;
+            // Bottom
+            case 2:
+                x = rng.nextInt(Globals.WIDTH);
+                setPosition(x, Globals.HEIGHT);
+                break;
+            // Left
+            case 3:
+                y = rng.nextInt(Globals.HEIGHT);
+                setPosition(0, y);
+                break;
+        }
     }
 
     public boolean isAlive() {
         return alive;
     }
 
-    protected abstract void onOffScreen();
+    protected void onOffScreen() {
+
+    }
 
     protected abstract void onKill();
 
-    protected boolean wrapAround() {
-        if (centerX > maxWidth + width) {
-            positionX = -(width / 2);
+    private void wrapAround() {
+        double centerX = bounds.getCenterX() + position.getX();
+        double centerY = bounds.getCenterY() + position.getY();
+        if (centerX > Globals.WIDTH + bounds.getWidth()) {
+            setPosition(-(bounds.getWidth() / 2), position.getY());
         } else if (centerX < 0) {
-            positionX = maxWidth + width / 2;
-        } else if (centerY > maxHeight + height) {
-            positionY = -(height / 2);
+            setPosition(Globals.WIDTH + (bounds.getWidth() / 2), position.getY());
+        } else if (centerY > Globals.HEIGHT + bounds.getHeight()) {
+            setPosition(position.getX(), -(bounds.getHeight() / 2));
         } else if (centerY < 0) {
-            positionY = maxHeight + height / 2;
-        } else {
-            return false;
+            setPosition(position.getX(), Globals.HEIGHT + (bounds.getHeight() / 2));
         }
-        return true;
+    }
+
+    public void explode() {
+        // Create a new explosion
+        new Explosion((int) position.getX(), (int) position.getY(), (float) bounds.getWidth() / 2.0f);
     }
 
     public enum Size {
@@ -191,19 +211,11 @@ public abstract class Sprite {
         public int getWidth() {
             return width;
         }
-
-        public int getScore() {
-            return (int) (Math.pow(1 + values().length - ordinal(), 2) * 50);
-        }
-    }
-
-    public static void setBounds(Bounds bounds) {
-        Sprite.bounds = bounds;
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(centerX, centerY, angle);
+        return Objects.hash(position, velocity);
     }
 
 }

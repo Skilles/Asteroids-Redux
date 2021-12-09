@@ -2,10 +2,7 @@ package cs1302.game;
 
 import cs1302.game.content.Globals;
 import cs1302.game.content.MainMenu;
-import cs1302.game.content.sprites.Sprite;
 import javafx.animation.AnimationTimer;
-import javafx.geometry.BoundingBox;
-import javafx.geometry.Bounds;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.input.KeyCode;
@@ -17,7 +14,8 @@ import java.util.BitSet;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import static cs1302.game.content.Globals.*;
+import static cs1302.game.content.Globals.HEIGHT;
+import static cs1302.game.content.Globals.WIDTH;
 
 public abstract class Game extends StackPane {
 
@@ -25,9 +23,7 @@ public abstract class Game extends StackPane {
 
     public static int FPS;
 
-    Canvas canvas;
     GraphicsContext ctx;
-    Bounds bounds;
 
     private AnimationTimer timer;
     private final BitSet keysPressed = new BitSet();
@@ -45,12 +41,10 @@ public abstract class Game extends StackPane {
     }
 
     public void init(String title, Stage stage) {
-        this.canvas = new Canvas(WIDTH, HEIGHT);
+        Canvas canvas = new Canvas(WIDTH, HEIGHT);
         this.ctx = canvas.getGraphicsContext2D();
-        this.bounds = new BoundingBox(0, 0, WIDTH, HEIGHT);
         this.title = title;
         this.mainMenu = new MainMenu(this);
-        Sprite.setBounds(bounds);
         setMinWidth(WIDTH);
         setMinHeight(HEIGHT);
 

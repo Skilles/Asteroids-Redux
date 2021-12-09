@@ -1,6 +1,7 @@
 package cs1302.game.content.animations;
 
 import cs1302.game.content.Globals;
+import cs1302.game.content.managers.SoundManager;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
@@ -32,7 +33,7 @@ public class Explosion extends Animation {
         this.radius = radius;
         this.finished = false;
 
-        numParticles = Math.min(MAX_PARTICLES, (int) ((radius * radius) / 70)) + 25;
+        numParticles = Math.min(MAX_PARTICLES, (int) ((radius * radius) / 70));
         rectangles = new Rectangle[numParticles];
         delays = new long[numParticles];
         angles = new float[numParticles];

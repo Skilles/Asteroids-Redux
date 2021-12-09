@@ -1,6 +1,6 @@
 package cs1302.game.content.sprites;
 
-import cs1302.game.content.animations.Explosion;
+import cs1302.game.content.Globals;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
@@ -13,21 +13,26 @@ import java.util.Set;
 public class Asteroid extends PhysicSprite {
 
     public static final double MAX_ROTATION_VELOCITY = 1;
-    public static final double MAX_VELOCITY = 500;
 
     private static final Random rng = new Random();
 
     private final Size size;
 
-    public boolean collided = false;
-
-    public Asteroid() {
-        this(Size.HUGE);
-    }
-
     public Asteroid(Size size) {
         super("file:resources/sprites/asteroid.png", size, getMass(size));
         this.size = size;
+        MIN_SPEED = 150;
+        MAX_SPEED = 300;
+        setRotation(rng.nextDouble() * 360);
+        randomVelocity();
+    }
+
+    @Override
+    public void randomVelocity() {
+        super.randomVelocity();
+        setVelocity(velocity.getX() / (1 + getSize().ordinal()),
+                velocity.getY() / (1 + getSize().ordinal()),
+                (rng.nextDouble() * 2 - 1) * MAX_ROTATION_VELOCITY);
     }
 
     @Override
@@ -37,8 +42,7 @@ public class Asteroid extends PhysicSprite {
 
     @Override
     protected void onOffScreen() {
-        velocityX = (rng.nextBoolean() ? rng.nextFloat() : -rng.nextFloat()) * 100;
-        velocityY = (rng.nextBoolean() ? rng.nextFloat() : -rng.nextFloat()) * 100;
+
     }
 
     @Override
@@ -59,14 +63,14 @@ public class Asteroid extends PhysicSprite {
 
     @Override
     public Shape getBoundary() {
-        Circle circle = new Circle(positionX, positionY, width / 4);
         // circle.getTransforms().add(new Rotate(this.angle, positionX, positionY));
-        return circle;
+        return new Circle(position.getX(), position.getY(), bounds.getWidth() / 4);
     }
 
     @Override
     public void onKill() {
-        explode();
+        super.onKill();
+        Globals.hudManager.addScore(getScore(size));
     }
 
     public Size getSize() {
@@ -79,11 +83,11 @@ public class Asteroid extends PhysicSprite {
             return splitList;
         }
 
-        int pieces = rng.nextInt(2) + 1;
+        int pieces = 2;
         Size newSize = Size.values()[size.ordinal() - 1];
 
         for (int i = 0; i < pieces; i++) {
-            Asteroid asteroid = spawnChildInArea(getSpawnArea(), newSize);
+            Asteroid asteroid = spawnChild(newSize);
             asteroid.setCollidable(false);
             splitList.add(asteroid);
         }
@@ -91,10 +95,11 @@ public class Asteroid extends PhysicSprite {
     }
 
     public Shape getSpawnArea() {
-        return new Circle(positionX, positionY, width / 3);
+        return new Circle(position.getX(), position.getY(), bounds.getWidth() / 3);
     }
 
-    private static Asteroid spawnChildInArea(Shape shape, Size size) {
+    private Asteroid spawnChild(Size size) {
+        Shape shape = getSpawnArea();
         Asteroid child = new Asteroid(size);
         double radius = shape.getBoundsInParent().getWidth() / 2;
         double x = shape.getBoundsInParent().getCenterX();
@@ -118,10 +123,20 @@ public class Asteroid extends PhysicSprite {
         return (1 + size.ordinal()) * 330;
     }
 
-    public void explode() {
-        // Kills and splits this asteroid into smaller ones
-
-        // Create a new explosion
-        new Explosion((int) positionX, (int) positionY, (float) width / 2.0f);
+    private static int getScore(Size size) {
+        switch (size) {
+            case SMALL:
+                return 100;
+            case MEDIUM:
+                return 50;
+            case LARGE:
+                return 20;
+            case XLARGE:
+                return 10;
+            default:
+                System.out.println("Invalid size " + size);
+                return 0;
+        }
     }
+
 }

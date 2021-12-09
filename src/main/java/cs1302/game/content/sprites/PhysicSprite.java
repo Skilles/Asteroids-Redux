@@ -24,11 +24,6 @@ public abstract class PhysicSprite extends Sprite {
         this.collidable = collidable;
     }
 
-    /**
-     * https://courses.lumenlearning.com/boundless-physics/chapter/collisions/
-     * https://code.tutsplus.com/tutorials/playing-around-with-elastic-collisions--active-7472
-     * https://spicyyoghurt.com/tutorials/html5-javascript-game-development/collision-detection-physics
-     */
     public void collide(PhysicSprite other) {
         if (!collidable && !other.collidable) {
             return;
@@ -36,11 +31,11 @@ public abstract class PhysicSprite extends Sprite {
 
         double totalMass = mass + other.mass;
 
-        double xDist = other.positionX - positionX;
-        double yDist = other.positionY - positionY;
+        double xDist = other.position.getX() - position.getX();
+        double yDist = other.position.getY() - position.getY();
 
         Point2D collisionVector = new Point2D(xDist, yDist).normalize();
-        Point2D relVelocity = new Point2D(velocityX - other.velocityX, velocityY - other.velocityY);
+        Point2D relVelocity = new Point2D(velocity.getX() - other.velocity.getX(), velocity.getY() - other.velocity.getY());
 
         // Check for if the objects are moving away from each other
         double dotProduct = collisionVector.dotProduct(relVelocity);
@@ -51,13 +46,21 @@ public abstract class PhysicSprite extends Sprite {
         double speed = relVelocity.getX() * collisionVector.getX() + relVelocity.getY() * collisionVector.getY();
         double impulse = 2 * speed / totalMass;
 
-        velocityX -= (impulse * other.mass * collisionVector.getX());
-        velocityY -= (impulse * other.mass * collisionVector.getY());
-        other.velocityX += (impulse * mass * collisionVector.getX());
-        other.velocityY += (impulse * mass * collisionVector.getY());
+        double velocityX = velocity.getX() - (impulse * other.mass * collisionVector.getX());
+        double velocityY = velocity.getY() - (impulse * other.mass * collisionVector.getY());
+        // Calculate the new rotational velocity TODO
+        double rotVelocity = (velocity.getZ() + (impulse * other.mass * (collisionVector.getX())));
+
+        setVelocity(velocityX, velocityY, velocity.getZ());
+        other.setVelocity(other.velocity.getX() + (impulse * mass * collisionVector.getX()), other.velocity.getY() + (impulse * mass * collisionVector.getY()), other.velocity.getZ());
 
         this.lastCollider = other;
         other.lastCollider = this;
+    }
+
+    @Override
+    protected void onKill() {
+        explode();
     }
 
     @Override

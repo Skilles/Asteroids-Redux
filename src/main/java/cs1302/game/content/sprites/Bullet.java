@@ -1,5 +1,7 @@
 package cs1302.game.content.sprites;
 
+import javafx.scene.shape.Shape;
+
 public class Bullet extends Sprite {
 
     private final Sprite parent;
@@ -8,15 +10,12 @@ public class Bullet extends Sprite {
     private double lifeTime;
 
     public Bullet(Sprite parent, double force) {
-        super("file:resources/sprites/longBullet.png", Size.TINY);
+        super("file:resources/sprites/bullet_long.png", Size.TINY);
         double cos = Math.cos(parent.radAngle - 1.57);
         double sin = Math.sin(parent.radAngle - 1.57);
-        this.positionX = parent.positionX + 20 * cos;
-        this.positionY = parent.positionY + 20 * sin;
+        setPosition(parent.position.getX() + 20 * cos, parent.position.getY() + 20 * sin);
+        setVelocity(force * cos, force * sin, 0);
         this.setRotation(parent.angle - 90);
-        this.velocityX = force * cos;
-        this.velocityY = force * sin;
-
         this.parent = parent;
     }
 
@@ -37,6 +36,13 @@ public class Bullet extends Sprite {
         if (lifeTime > LIFE_TIME) {
             kill();
         }
+    }
+
+    @Override
+    public Shape getBoundary() {
+        Shape boundary = super.getBoundary();
+        boundary.setRotate(angle);
+        return boundary;
     }
 
     public Sprite getParent() {

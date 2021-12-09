@@ -1,6 +1,7 @@
 package cs1302.game.content.sprites;
 
 import cs1302.game.content.Globals;
+import cs1302.game.content.managers.SoundManager;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.effect.ColorAdjust;
 import javafx.scene.shape.Circle;
@@ -15,7 +16,6 @@ public class Player extends PhysicSprite {
     private static final int SHOOT_COOLDOWN = 75;
     private int currentShootCooldown = 0;
 
-    private static final int MAX_HEALTH = 5;
     private static final int DAMAGE_COOLDOWN = 250;
     private int currentDamageCooldown = 0;
     private int health = 3;
@@ -27,32 +27,40 @@ public class Player extends PhysicSprite {
         super("file:resources/sprites/spaceship.png", Size.SMALL, 300);
         hAcceleration = 500;
         vAcceleration = 500;
+
+        Globals.bulletManager.bindFunction(this, bullet -> {
+            if (bullet.getParent() != this && bullet.intersects(this)) {
+                bullet.kill();
+                damage(1);
+            }
+        });
     }
 
     public void turnRight(double delta) {
-        addRotation(150 * delta);
+        addVelocity(0, 0, 1000 * delta);
     }
 
     public void turnLeft(double delta) {
-        addRotation(-150 * delta);
+        addVelocity(0, 0, -1000 * delta);
     }
 
     public void accelerate(double delta) {
-        velocityX += hAcceleration * Math.sin(radAngle) * delta;
-        velocityY -= vAcceleration * Math.cos(radAngle) * delta;
+        setVelocity(velocity.getX() + hAcceleration * Math.sin(radAngle) * delta,
+                velocity.getY() - vAcceleration * Math.cos(radAngle) * delta, velocity.getZ());
     }
 
     public void decelerate(double delta) {
-        velocityX -= hAcceleration * Math.sin(radAngle) * delta;
-        velocityY += vAcceleration * Math.cos(radAngle) * delta;
+        setVelocity(velocity.getX() - hAcceleration * Math.sin(radAngle) * delta,
+                velocity.getY() + vAcceleration * Math.cos(radAngle) * delta, velocity.getZ());
     }
 
     public void brake(double delta, double force) {
-        force = force * delta;
+        force *= delta;
+        double velocityX = velocity.getX() * (1 - force / 100);
+        double velocityY = velocity.getY() * (1 - force / 100);
+        double velocityR = velocity.getZ() * 0.97;
 
-        velocityX *= (1 - force / 100);
-        velocityY *= (1 - force / 100);
-        velocityR *= 0.95 * delta;
+        setVelocity(velocityX, velocityY, velocityR);
     }
 
     @Override
@@ -84,19 +92,12 @@ public class Player extends PhysicSprite {
 
     @Override
     public Shape getBoundary() {
-        Circle circle = new Circle(positionX, positionY, width / 2);
-        // rectangle.getTransforms().add(new Rotate(this.angle, positionX, positionY));
-        // rectangle.setRotate(this.angle);
-        return circle;
-    }
-
-    @Override
-    protected void onOffScreen() {
-
+        return new Circle(position.getX(), position.getY(), bounds.getWidth() / 2);
     }
 
     @Override
     public void onKill() {
+        super.onKill();
         Globals.hudManager.setGameOver(true);
     }
 
@@ -117,7 +118,7 @@ public class Player extends PhysicSprite {
     }
 
     public void damage(int damage) {
-        if (currentDamageCooldown == 0) {
+        if (currentDamageCooldown <= 0) {
             currentDamageCooldown = DAMAGE_COOLDOWN;
             health -= damage;
             Globals.soundManager.playSound(SoundManager.Sounds.SHIP_DAMAGE);
@@ -138,10 +139,12 @@ public class Player extends PhysicSprite {
     }
 
     public void reset() {
-        health = MAX_HEALTH;
+        health = 3;
         currentDamageCooldown = 0;
-        positionX = 720;
-        positionY = 360;
+        currentShootCooldown = 0;
+        hyperspaceTimer = 0;
+        setPosition(Globals.WIDTH / 2.0, Globals.HEIGHT / 2.0);
+        setVelocity(0, 0, 0);
         alive = true;
     }
 

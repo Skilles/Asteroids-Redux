@@ -1,12 +1,8 @@
 package cs1302.game;
 
 import cs1302.game.content.Globals;
-import cs1302.game.content.managers.AnimationManager;
-import cs1302.game.content.managers.AsteroidManager;
-import cs1302.game.content.managers.BulletManager;
-import cs1302.game.content.managers.HUDManager;
+import cs1302.game.content.managers.*;
 import cs1302.game.content.sprites.Player;
-import javafx.geometry.Bounds;
 import javafx.scene.image.Image;
 import javafx.scene.input.KeyCode;
 import javafx.scene.paint.Color;
@@ -39,17 +35,26 @@ public class Asteroids extends Game {
         setStyle("-fx-background-color: black");
         background = new Image("file:resources/bg.png", Globals.WIDTH, Globals.HEIGHT, false, true);
 
-        player = new Player();
-        player.setPosition(300, 300);
-
+        // Create the animation manager
         animationManager = new AnimationManager();
+        // Create the bullet manager
         bulletManager = new BulletManager();
+
+        // Create the player
+        player = new Player();
+        player.setPosition(Globals.WIDTH / 2.0, Globals.HEIGHT / 2.0);
+
+        // Create the hud manager
         hudManager = new HUDManager();
         // Create the enemy manager
         enemyManager = new EnemyManager();
 
+        // Create the asteroid manager
         asteroidManager = new AsteroidManager(player);
         asteroidManager.generateAsteroids();
+
+        // Create the sound manager
+        new SoundManager();
 
         ctx.setFill(Color.GREEN);
         ctx.setStroke(Color.BLACK);
@@ -61,6 +66,18 @@ public class Asteroids extends Game {
     @Override
     public void update(long currentNanoTime) {
         super.update(currentNanoTime);
+        pauseTimer += elapsedTime();
+        if (paused) {
+            hudManager.show(ctx, "Press ESC to resume", Color.GREEN);
+            if (pauseTimer >= 0.5 && isKeyPressed(KeyCode.ESCAPE)) {
+                pauseTimer = 0;
+                paused = false;
+            }
+            return;
+        } else if (pauseTimer >= 0.5) {
+            pauseTimer = 0;
+        }
+
         asteroidManager.update(elapsedTime());
         animationManager.update(currentNanoTime);
         bulletManager.update(elapsedTime());
@@ -73,7 +90,7 @@ public class Asteroids extends Game {
         if (player.isAlive()) {
             handleControls(elapsedTime());
 
-            player.brake(elapsedTime(), 200);
+            player.brake(elapsedTime(), 150);
             player.update(elapsedTime());
         } else {
             deathTime += elapsedTime();
@@ -102,10 +119,6 @@ public class Asteroids extends Game {
     }
 
     private void handleControls(double delta) {
-        isKeyPressed(KeyCode.LEFT, () -> player.turnLeft(delta));
-        isKeyPressed(KeyCode.RIGHT, () -> player.turnRight(delta));
-        isKeyPressed(KeyCode.UP, () -> player.accelerate(delta));
-        isKeyPressed(KeyCode.DOWN, () -> player.decelerate(delta));
         isKeyPressed(KeyCode.A, () -> player.turnLeft(delta));
         isKeyPressed(KeyCode.D, () -> player.turnRight(delta));
         isKeyPressed(KeyCode.W, () -> player.accelerate(delta));
@@ -120,11 +133,13 @@ public class Asteroids extends Game {
     }
 
     public void reset() {
-        pause();
+        super.pause();
+        bulletManager.reset();
         player.reset();
         asteroidManager.reset();
         hudManager.reset();
         mainMenu.main();
+        enemyManager.reset();
         deathTime = 0;
     }
 

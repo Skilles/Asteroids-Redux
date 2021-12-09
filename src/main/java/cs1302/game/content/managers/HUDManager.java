@@ -9,7 +9,7 @@ import javafx.scene.text.Font;
 
 public class HUDManager extends Manager {
 
-    private long score;
+    private int score;
 
     private boolean gameOver;
 
@@ -45,7 +45,7 @@ public class HUDManager extends Manager {
         this.score = score;
     }
 
-    public long getScore() {
+    public int getScore() {
         return score;
     }
 
@@ -68,7 +68,7 @@ public class HUDManager extends Manager {
     }
 
     private void drawFPS(GraphicsContext ctx) {
-        ctx.fillText("FPS: " + Game.FPS, 10, 60);
+        ctx.fillText("FPS: " + Game.FPS, Globals.WIDTH - 75, 20);
     }
 
     public void setGameOver(boolean gameOver) {
