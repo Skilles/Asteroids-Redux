@@ -4,7 +4,8 @@
 module cs1302.omega {
     requires transitive java.logging;
     requires transitive javafx.controls;
-    requires transitive com.google.gson;
+    requires transitive javafx.media;
     exports cs1302.game;
     exports cs1302.omega;
+    exports cs1302.game.content;
 } // module

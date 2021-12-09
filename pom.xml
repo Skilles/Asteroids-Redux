@@ -38,9 +38,9 @@
 
   <developers>
     <developer>
-      <name>$bm44959</name>
-      <email>$bm44959@uga.edu</email>
-      <url>https://webwork.cs.uga.edu/~$bm44959/${project.name}</url>
+      <name>Bilal Madi</name>
+      <email>bm44959@uga.edu</email>
+      <url>https://webwork.cs.uga.edu/~bm44959/${project.name}</url>
     </developer>
   </developers>
 
@@ -75,6 +75,11 @@
     <dependency>
       <groupId>org.openjfx</groupId>
       <artifactId>javafx-controls</artifactId>
+      <version>${openjfx.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>org.openjfx</groupId>
+      <artifactId>javafx-media</artifactId>
       <version>${openjfx.version}</version>
     </dependency>
     <dependency>
