@@ -29,6 +29,7 @@ public class HUDManager extends Manager {
         drawScore(ctx);
         drawFPS(ctx);
         drawHealth(ctx, Globals.game.getPlayer());
+        drawHyperspace(ctx, Globals.game.getPlayer());
         ctx.setTextAlign(javafx.scene.text.TextAlignment.CENTER);
         if (gameOver) {
             int x = Globals.WIDTH / 2;
@@ -58,6 +59,12 @@ public class HUDManager extends Manager {
 
     public void drawHealth(GraphicsContext ctx, Player player) {
         ctx.fillText("Health: " + player.getHealth(), 10, 40);
+    }
+
+    public void drawHyperspace(GraphicsContext ctx, Player player) {
+        if (player.hasHyperspace()) {
+            ctx.fillText("Hyperspace Available", Globals.WIDTH / 2.0 - 85, 20);
+        }
     }
 
     private void drawFPS(GraphicsContext ctx) {

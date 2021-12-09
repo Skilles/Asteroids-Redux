@@ -111,7 +111,8 @@ public class Asteroids extends Game {
         isKeyPressed(KeyCode.W, () -> player.accelerate(delta));
         isKeyPressed(KeyCode.S, () -> player.decelerate(delta));
 
-        isKeyPressed(KeyCode.SPACE, () -> player.shoot(delta));
+        isKeyPressed(KeyCode.SPACE, () -> player.shoot());
+        isKeyPressed(KeyCode.SHIFT, () -> player.hyperspace());
     }
 
     private void drawBackground() {

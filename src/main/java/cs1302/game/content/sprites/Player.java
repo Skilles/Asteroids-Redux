@@ -20,6 +20,9 @@ public class Player extends PhysicSprite {
     private int currentDamageCooldown = 0;
     private int health = 3;
 
+    private static final int HYPERSPACE_COOLDOWN = 10;
+    double hyperspaceTimer;
+
     public Player() {
         super("file:resources/sprites/spaceship.png", Size.SMALL, 300);
         hAcceleration = 500;
@@ -61,6 +64,9 @@ public class Player extends PhysicSprite {
         if (currentDamageCooldown > 0) {
             currentDamageCooldown -= delta;
         }
+        if (hyperspaceTimer > 0) {
+            hyperspaceTimer -= delta;
+        }
     }
 
     @Override
@@ -94,8 +100,16 @@ public class Player extends PhysicSprite {
         Globals.hudManager.setGameOver(true);
     }
 
-    public void shoot(double delta) {
-        if (currentShootCooldown == 0) {
+    public void hyperspace() {
+        if (hasHyperspace()) {
+            hyperspaceTimer = HYPERSPACE_COOLDOWN;
+            Globals.soundManager.playSound(SoundManager.Sounds.HYPERSPACE);
+            setPosition(rng.nextDouble() * Globals.WIDTH, rng.nextDouble() * Globals.HEIGHT);
+        }
+    }
+
+    public void shoot() {
+        if (currentShootCooldown <= 0) {
             currentShootCooldown = SHOOT_COOLDOWN;
             Globals.bulletManager.add(new Bullet(this, 300));
             Globals.soundManager.playSound(SoundManager.Sounds.LASER_SHOOT);
@@ -129,6 +143,10 @@ public class Player extends PhysicSprite {
         positionX = 720;
         positionY = 360;
         alive = true;
+    }
+
+    public boolean hasHyperspace() {
+        return hyperspaceTimer <= 0;
     }
 
 }
