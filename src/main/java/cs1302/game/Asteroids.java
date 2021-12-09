@@ -20,12 +20,12 @@ public class Asteroids extends Game {
     private HUDManager hudManager;
     private AnimationManager animationManager;
     private BulletManager bulletManager;
+    private EnemyManager enemyManager;
 
     private Image background;
 
     private double deathTime;
-
-    private Bounds bounds;
+    boolean paused;
 
     public Asteroids(Stage stage, int width, int height) {
         super("Asteroids", stage, width, height);
@@ -45,6 +45,8 @@ public class Asteroids extends Game {
         animationManager = new AnimationManager();
         bulletManager = new BulletManager();
         hudManager = new HUDManager();
+        // Create the enemy manager
+        enemyManager = new EnemyManager();
 
         asteroidManager = new AsteroidManager(player);
         asteroidManager.generateAsteroids();
@@ -62,6 +64,11 @@ public class Asteroids extends Game {
         asteroidManager.update(elapsedTime());
         animationManager.update(currentNanoTime);
         bulletManager.update(elapsedTime());
+        enemyManager.update(elapsedTime());
+
+        if (isKeyPressed(KeyCode.ESCAPE)) {
+            pause();
+        }
 
         if (player.isAlive()) {
             handleControls(elapsedTime());
@@ -87,6 +94,7 @@ public class Asteroids extends Game {
         animationManager.render(ctx);
         hudManager.render(ctx);
         bulletManager.render(ctx);
+        enemyManager.render(ctx);
 
         if (player.isAlive()) {
             player.render(ctx);
@@ -127,6 +135,14 @@ public class Asteroids extends Game {
 
     public Player getPlayer() {
         return player;
+    }
+
+    double pauseTimer;
+    @Override
+    public void pause() {
+        if (pauseTimer > 0.5) {
+            paused = true;
+        }
     }
 
 }
