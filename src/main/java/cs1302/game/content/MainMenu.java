@@ -26,22 +26,18 @@ public class MainMenu extends VBox {
         int buttonWidth = Globals.WIDTH / 10;
 
         Button playButton = new Button("Play");
-        playButton.setId("play-button");
         playButton.setOnAction(e -> game.play());
         playButton.setMinWidth(buttonWidth);
 
-        Button instructionsButton = new Button("Instructions");
-        instructionsButton.setId("instructions-button");
-        instructionsButton.setOnAction(e -> instructions());
+        Button instructionsButton = new Button("Controls");
+        instructionsButton.setOnAction(e -> controls());
         instructionsButton.setMinWidth(buttonWidth);
 
         Button creditsButton = new Button("Credits");
-        creditsButton.setId("credits-button");
         creditsButton.setOnAction(e -> credits());
         creditsButton.setMinWidth(buttonWidth);
 
         Button quitButton = new Button("Quit");
-        quitButton.setId("quit-button");
         quitButton.setOnAction(e -> System.exit(0));
         quitButton.setMinWidth(buttonWidth);
 
@@ -50,7 +46,6 @@ public class MainMenu extends VBox {
 
     private Text getTitleText(String text, int size) {
         Text titleText = new Text(text);
-        titleText.setId("title");
         titleText.setFont(Font.loadFont("file:resources/fonts/MaldiniBold.ttf", size));
         titleText.setFill(Color.WHITE);
         return titleText;
@@ -70,13 +65,16 @@ public class MainMenu extends VBox {
                 + "By: Bilal Madi"));
     }
 
-    private void instructions() {
+    private void controls() {
         game.getChildren().remove(this);
-        game.getChildren().add(1, new TextMenu("Instructions", "Instructions:\n" +
-                "1. Use WASD to move the player.\n" +
-                "2. Use the space bar to shoot.\n" +
-                "3. Avoid the asteroids.\n" +
-                "4. Collect the power ups.\n"));
+        game.getChildren().add(1, new TextMenu("Controls",
+                "W: Thrust Forwards\n" +
+                "A: Turn Left\n" +
+                "S: Thrust Backwards\n" +
+                "D: Turn Right\n" +
+                "Space: Shoot\n" +
+                "Shift: Hyperspace\n" +
+                "Escape: Pause"));
     }
 
     class TextMenu extends VBox {
@@ -87,11 +85,9 @@ public class MainMenu extends VBox {
             setSpacing(10);
 
             Label creditsLabel = new Label(text);
-            creditsLabel.setId("text");
             creditsLabel.setTextFill(Color.WHITE);
 
             Button backButton = new Button("Back");
-            backButton.setId("back-button");
             backButton.setOnAction(e -> main());
 
             getChildren().addAll(getTitleText(title, 70), creditsLabel, backButton);
