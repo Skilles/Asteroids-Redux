@@ -13,6 +13,8 @@ public class HUDManager extends Manager {
 
     private boolean gameOver;
 
+    private static int SCORE_THRESHOLD = 5000;
+
     public HUDManager() {
         super();
         this.score = 0;
@@ -51,6 +53,10 @@ public class HUDManager extends Manager {
 
     public void addScore(int score) {
         this.score += score;
+        if (Globals.game.getPlayer().isAlive() && this.score >= SCORE_THRESHOLD) {
+            SCORE_THRESHOLD += 5000;
+            Globals.game.getPlayer().addHealth(1);
+        }
     }
 
     private void drawScore(GraphicsContext ctx) {

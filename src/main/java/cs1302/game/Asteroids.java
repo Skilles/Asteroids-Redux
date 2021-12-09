@@ -24,7 +24,7 @@ public class Asteroids extends Game {
     boolean paused;
 
     public Asteroids(Stage stage, int width, int height) {
-        super("Asteroids", stage, width, height);
+        super("Asteroids Redux", stage, width, height);
     }
 
     @Override
@@ -66,6 +66,9 @@ public class Asteroids extends Game {
     @Override
     public void update(long currentNanoTime) {
         super.update(currentNanoTime);
+        if (getChildren().size() > 1) {
+            return;
+        }
         pauseTimer += elapsedTime();
         if (paused) {
             hudManager.show(ctx, "Press ESC to resume", Color.GREEN);

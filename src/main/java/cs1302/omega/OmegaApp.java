@@ -33,7 +33,6 @@ public class OmegaApp extends Application {
         root.getChildren().add(game);
 
         // setup stage
-        stage.setTitle("Asteroids Reborn");
         stage.setScene(scene);
         stage.setOnCloseRequest(event -> Platform.exit());
         stage.sizeToScene();

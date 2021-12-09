@@ -152,4 +152,8 @@ public class Player extends PhysicSprite {
         return hyperspaceTimer <= 0;
     }
 
+    public void addHealth(int i) {
+        health += i;
+    }
+
 }

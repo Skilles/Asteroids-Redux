@@ -50,6 +50,7 @@ public abstract class Game extends StackPane {
 
         stage.addEventFilter(KeyEvent.KEY_PRESSED, this::handleKeyPressed);
         stage.addEventFilter(KeyEvent.KEY_RELEASED, this::handleKeyReleased);
+        stage.setTitle(title);
 
         getChildren().addAll(canvas, mainMenu);
 
