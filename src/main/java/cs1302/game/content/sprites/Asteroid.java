@@ -2,37 +2,43 @@ package cs1302.game.content.sprites;
 
 import cs1302.game.content.Globals;
 import javafx.scene.canvas.GraphicsContext;
-import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
 import javafx.scene.shape.Shape;
 
 import java.util.HashSet;
-import java.util.Random;
 import java.util.Set;
 
+/**
+ * An asteroid is a sprite that can be destroyed by bullets and split apart. Collides with other
+ * asteroids and the player but not enemies. Smaller pieces are worth more points and have less
+ * mass.
+ */
 public class Asteroid extends PhysicSprite {
 
     public static final double MAX_ROTATION_VELOCITY = 1;
 
-    private static final Random rng = new Random();
-
     private final Size size;
 
+    /**
+     * Instantiates a new Asteroid.
+     *
+     * @param size the size
+     */
     public Asteroid(Size size) {
         super("file:resources/sprites/asteroid.png", size, getMass(size));
         this.size = size;
-        MIN_SPEED = 150;
-        MAX_SPEED = 300;
-        setRotation(rng.nextDouble() * 360);
+        minSpeed = 150;
+        maxSpeed = 300;
+        setRotation(RNG.nextDouble() * 360);
         randomVelocity();
     }
 
     @Override
     public void randomVelocity() {
         super.randomVelocity();
-        setVelocity(velocity.getX() / (1 + getSize().ordinal()),
-                velocity.getY() / (1 + getSize().ordinal()),
-                (rng.nextDouble() * 2 - 1) * MAX_ROTATION_VELOCITY);
+        setVelocity(velocity.getX() / (1 + size.ordinal()),
+                velocity.getY() / (1 + size.ordinal()),
+                (RNG.nextDouble() * 2 - 1) * MAX_ROTATION_VELOCITY);
     }
 
     @Override
@@ -41,16 +47,11 @@ public class Asteroid extends PhysicSprite {
     }
 
     @Override
-    protected void onOffScreen() {
-
-    }
-
-    @Override
     public void render(GraphicsContext gc) {
         super.render(gc);
     }
 
-    private void drawChildBoundary(GraphicsContext gc, Color color) {
+    /*private void drawChildBoundary(GraphicsContext gc, Color color) {
         gc.setFill(color);
         Shape collisionShape = getSpawnArea();
         double cx = collisionShape.getBoundsInParent().getMinX();
@@ -59,7 +60,7 @@ public class Asteroid extends PhysicSprite {
         double h = collisionShape.getBoundsInParent().getHeight();
         gc.fillOval(cx, cy, w, h);
         gc.setFill(Color.GREEN);
-    }
+    }*/
 
     @Override
     public Shape getBoundary() {
@@ -70,13 +71,14 @@ public class Asteroid extends PhysicSprite {
     @Override
     public void onKill() {
         super.onKill();
-        Globals.hudManager.addScore(getScore(size));
+        Globals.hudManager.addScore(getScore());
     }
 
-    public Size getSize() {
-        return size;
-    }
-
+    /**
+     * Returns a set of all the child asteroids for when this asteroid splits.
+     *
+     * @return a set of all the child asteroids
+     */
     public Set<Asteroid> getChildren() {
         Set<Asteroid> splitList = new HashSet<>();
         if (size.ordinal() <= 1) {
@@ -94,10 +96,21 @@ public class Asteroid extends PhysicSprite {
         return splitList;
     }
 
+    /**
+     * Gets the area where children can spawn.
+     *
+     * @return the spawn area
+     */
     public Shape getSpawnArea() {
         return new Circle(position.getX(), position.getY(), bounds.getWidth() / 3);
     }
 
+    /**
+     * Spawn's an asteroid of the given size in a random location inside the asteroid's spawn area.
+     *
+     * @param size the size of the child
+     * @return the asteroid that was spawned
+     */
     private Asteroid spawnChild(Size size) {
         Shape shape = getSpawnArea();
         Asteroid child = new Asteroid(size);
@@ -105,8 +118,8 @@ public class Asteroid extends PhysicSprite {
         double x = shape.getBoundsInParent().getCenterX();
         double y = shape.getBoundsInParent().getCenterY();
 
-        double a = rng.nextDouble();
-        double b = rng.nextDouble();
+        double a = RNG.nextDouble();
+        double b = RNG.nextDouble();
         if (b < a) {
             double temp = b;
             b = a;
@@ -119,23 +132,34 @@ public class Asteroid extends PhysicSprite {
         return child;
     }
 
+    /**
+     * Gets the mass value of the given size using the density of an asteroid.
+     *
+     * @param size the size of the asteroid
+     * @return the mass of the asteroid
+     */
     private static double getMass(Size size) {
         return (1 + size.ordinal()) * 330;
     }
 
-    private static int getScore(Size size) {
+    /**
+     * Gets the score value of this asteroid depending on its size.
+     *
+     * @return the score
+     */
+    private int getScore() {
         switch (size) {
-            case SMALL:
-                return 100;
-            case MEDIUM:
-                return 50;
-            case LARGE:
-                return 20;
-            case XLARGE:
-                return 10;
-            default:
-                System.out.println("Invalid size " + size);
-                return 0;
+        case SMALL:
+            return 100;
+        case MEDIUM:
+            return 50;
+        case LARGE:
+            return 20;
+        case XLARGE:
+            return 10;
+        default:
+            System.out.println("Invalid size " + size);
+            return 0;
         }
     }
 

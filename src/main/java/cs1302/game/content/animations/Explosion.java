@@ -9,6 +9,9 @@ import javafx.scene.shape.Rectangle;
 import java.time.Duration;
 import java.util.Random;
 
+/**
+ * An explosion animation that is used when physical sprites die.
+ */
 public class Explosion extends Animation {
 
     private static final int MAX_PARTICLES = 200;
@@ -27,6 +30,13 @@ public class Explosion extends Animation {
     float aliveRatio;
     int counter;
 
+    /**
+     * Instantiates a new Explosion.
+     *
+     * @param x      the x position
+     * @param y      the y position
+     * @param radius the radius of the explosion
+     */
     public Explosion(float x, float y, float radius) {
         this.x = x;
         this.y = y;
@@ -43,6 +53,9 @@ public class Explosion extends Animation {
         init();
     }
 
+    /**
+     * Init.
+     */
     private void init() {
         for (int i = 0; i < numParticles; i++) {
             rectangles[i] = new Rectangle(5, 5, Color.hsb(60, 1, 1));
@@ -54,6 +67,7 @@ public class Explosion extends Animation {
         Globals.soundManager.playSound(SoundManager.Sounds.EXPLOSION);
     }
 
+    @Override
     public void handle(long now) {
 
         for (int i = 0; i < rectangles.length * aliveRatio; i++) {

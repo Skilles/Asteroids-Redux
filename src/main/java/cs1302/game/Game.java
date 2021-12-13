@@ -17,13 +17,16 @@ import java.util.logging.Logger;
 import static cs1302.game.content.Globals.HEIGHT;
 import static cs1302.game.content.Globals.WIDTH;
 
+/**
+ * An abstract game class that contains the main game loop.
+ */
 public abstract class Game extends StackPane {
 
     protected final Logger logger = Logger.getLogger("cs1302.game.Game");
 
     public static int FPS;
 
-    GraphicsContext ctx;
+    protected GraphicsContext ctx;
 
     private AnimationTimer timer;
     private final BitSet keysPressed = new BitSet();
@@ -34,12 +37,26 @@ public abstract class Game extends StackPane {
     protected MainMenu mainMenu;
     private String title;
 
+    /**
+     * Instantiates a new Game.
+     *
+     * @param title  the title
+     * @param stage  the stage
+     * @param width  the width
+     * @param height the height
+     */
     public Game(String title, Stage stage, int width, int height) {
         Globals.setWidth(width);
         Globals.setHeight(height);
         init(title, stage);
     }
 
+    /**
+     * Init.
+     *
+     * @param title the title of the game
+     * @param stage the stage of the JavaFX application
+     */
     public void init(String title, Stage stage) {
         Canvas canvas = new Canvas(WIDTH, HEIGHT);
         this.ctx = canvas.getGraphicsContext2D();
@@ -65,6 +82,11 @@ public abstract class Game extends StackPane {
         logger.setLevel(Level.WARNING);
     }
 
+    /**
+     * Update the current game loop with the current time in nano seconds.
+     *
+     * @param currentNanoTime the current nano time
+     */
     public void update(long currentNanoTime) {
         // calculate time since last update.
         elapsedTime = (currentNanoTime - delta) / 1000000000.0;
@@ -78,6 +100,11 @@ public abstract class Game extends StackPane {
         }
     }
 
+    /**
+     * Render.
+     *
+     * @param currentNanoTime the current nano time
+     */
     public void render(long currentNanoTime) {
         // clear the canvas
         ctx.clearRect(0, 0, WIDTH, HEIGHT);
@@ -134,23 +161,44 @@ public abstract class Game extends StackPane {
         } // if
     } // isKeyPressed
 
+    /**
+     * Play the game.
+     */
     public void play() {
         timer.start();
     }
 
+    /**
+     * Pause the game.
+     */
     public void pause() {
         timer.stop();
         ctx.clearRect(0, 0, WIDTH, HEIGHT);
     }
 
+    /**
+     * Gets the time since the last update.
+     *
+     * @return the time since the last update
+     */
     public double elapsedTime() {
         return elapsedTime;
     }
 
+    /**
+     * Gets the title of the game.
+     *
+     * @return the title
+     */
     public String getTitle() {
         return title;
     }
 
+    /**
+     * Gets the main menu.
+     *
+     * @return the main menu
+     */
     public MainMenu getMainMenu() {
         return mainMenu;
     }

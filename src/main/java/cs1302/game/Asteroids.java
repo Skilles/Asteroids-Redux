@@ -9,6 +9,9 @@ import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 import javafx.stage.Stage;
 
+/**
+ * The type Asteroids.
+ */
 public class Asteroids extends Game {
 
     private Player player;
@@ -21,8 +24,16 @@ public class Asteroids extends Game {
     private Image background;
 
     private double deathTime;
+    double pauseTimer;
     boolean paused;
 
+    /**
+     * Instantiates a new Asteroids.
+     *
+     * @param stage  the stage
+     * @param width  the width
+     * @param height the height
+     */
     public Asteroids(Stage stage, int width, int height) {
         super("Asteroids Redux", stage, width, height);
     }
@@ -121,6 +132,11 @@ public class Asteroids extends Game {
         }
     }
 
+    /**
+     * Handle controls.
+     *
+     * @param delta the delta
+     */
     private void handleControls(double delta) {
         isKeyPressed(KeyCode.A, () -> player.turnLeft(delta));
         isKeyPressed(KeyCode.D, () -> player.turnRight(delta));
@@ -131,10 +147,16 @@ public class Asteroids extends Game {
         isKeyPressed(KeyCode.SHIFT, () -> player.hyperspace());
     }
 
+    /**
+     * Draw background.
+     */
     private void drawBackground() {
         ctx.drawImage(background, 0, 0);
     }
 
+    /**
+     * Reset.
+     */
     public void reset() {
         super.pause();
         bulletManager.reset();
@@ -152,11 +174,15 @@ public class Asteroids extends Game {
         getChildren().remove(mainMenu);
     }
 
+    /**
+     * Gets player.
+     *
+     * @return the player
+     */
     public Player getPlayer() {
         return player;
     }
 
-    double pauseTimer;
     @Override
     public void pause() {
         pauseTimer = 0;

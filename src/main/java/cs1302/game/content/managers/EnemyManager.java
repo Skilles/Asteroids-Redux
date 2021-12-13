@@ -5,6 +5,10 @@ import cs1302.game.content.sprites.Enemy;
 import cs1302.game.content.sprites.Player;
 import javafx.scene.canvas.GraphicsContext;
 
+/**
+ * A special sprite manager solely for the two enemies in the game. Handles their spawning behavior
+ * and difficulty.
+ */
 public class EnemyManager extends Manager {
 
     private Enemy smallEnemy;
@@ -13,6 +17,9 @@ public class EnemyManager extends Manager {
     private double smallTimer;
     private double largeTimer;
 
+    /**
+     * Instantiates a new Enemy manager.
+     */
     public EnemyManager() {
         super();
         Globals.setEnemyManager(this);
@@ -39,6 +46,11 @@ public class EnemyManager extends Manager {
         });
     }
 
+    /**
+     * Update the enemies with the elapsed time delta.
+     *
+     * @param delta the delta
+     */
     public void update(double delta) {
         if (smallEnemy.isAlive()) {
             smallEnemy.update(delta);
@@ -51,7 +63,8 @@ public class EnemyManager extends Manager {
             largeTimer += delta;
         }
 
-        if ((Globals.hudManager.getScore() >= 100 && smallTimer >= 30) || (Globals.hudManager.getScore() >= 10000 && smallTimer >= 7)) {
+        if ((Globals.hudManager.getScore() >= 100 && smallTimer >= 30)
+                || (Globals.hudManager.getScore() >= 10000 && smallTimer >= 7)) {
             spawnSmall();
             smallTimer = 0;
         }
@@ -66,14 +79,25 @@ public class EnemyManager extends Manager {
         }
     }
 
+    /**
+     * Spawn the small enemy.
+     */
     private void spawnSmall() {
         spawnEnemy(smallEnemy);
     }
 
+    /**
+     * Spawn the large enemy.
+     */
     private void spawnLarge() {
         spawnEnemy(largeEnemy);
     }
 
+    /**
+     * Spawn the specified enemy.
+     *
+     * @param enemy the enemy to spawn
+     */
     private void spawnEnemy(Enemy enemy) {
         // Set the enemy's position to a random location at a random edge on the screen
         enemy.randomPositionOnEdge();
@@ -93,6 +117,9 @@ public class EnemyManager extends Manager {
         }
     }
 
+    /**
+     * Reset.
+     */
     public void reset() {
         smallEnemy.setAlive(false);
         largeEnemy.setAlive(false);

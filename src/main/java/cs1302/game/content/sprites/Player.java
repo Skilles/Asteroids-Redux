@@ -7,6 +7,10 @@ import javafx.scene.effect.ColorAdjust;
 import javafx.scene.shape.Circle;
 import javafx.scene.shape.Shape;
 
+/**
+ * The main Player class. Responsible for the player's movement and rendering as well as shooting
+ * and hyperspace.
+ */
 public class Player extends PhysicSprite {
 
     private double hAcceleration;
@@ -23,12 +27,18 @@ public class Player extends PhysicSprite {
     private static final int HYPERSPACE_COOLDOWN = 10;
     double hyperspaceTimer;
 
+    /**
+     * Instantiates a new Player.
+     */
     public Player() {
         super("file:resources/sprites/spaceship.png", Size.SMALL, 300);
-        init();
     }
 
+    /**
+     * Initialize the player.
+     */
     public void init() {
+        super.init();
         hAcceleration = 500;
         vAcceleration = 500;
 
@@ -40,24 +50,50 @@ public class Player extends PhysicSprite {
         });
     }
 
+    /**
+     * Turn right.
+     *
+     * @param delta the elapsed time since the last update
+     */
     public void turnRight(double delta) {
         addVelocity(0, 0, 1000 * delta);
     }
 
+    /**
+     * Turn left.
+     *
+     * @param delta the elapsed time since the last update
+     */
     public void turnLeft(double delta) {
         addVelocity(0, 0, -1000 * delta);
     }
 
+    /**
+     * Thrusts forwards.
+     *
+     * @param delta the elapsed time since the last update
+     */
     public void accelerate(double delta) {
         setVelocity(velocity.getX() + hAcceleration * Math.sin(radAngle) * delta,
                 velocity.getY() - vAcceleration * Math.cos(radAngle) * delta, velocity.getZ());
     }
 
+    /**
+     * Thrust backwards.
+     *
+     * @param delta the elapsed time since the last update
+     */
     public void decelerate(double delta) {
         setVelocity(velocity.getX() - hAcceleration * Math.sin(radAngle) * delta,
                 velocity.getY() + vAcceleration * Math.cos(radAngle) * delta, velocity.getZ());
     }
 
+    /**
+     * Applies friction to the player, slowing him down when not accelerating or turning.
+     *
+     * @param delta the elapsed time since the last update
+     * @param force the friction force to apply
+     */
     public void brake(double delta, double force) {
         force *= delta;
         double velocityX = velocity.getX() * (1 - force / 100);
@@ -105,14 +141,20 @@ public class Player extends PhysicSprite {
         Globals.hudManager.setGameOver(true);
     }
 
+    /**
+     * Teleports the player to a random location on the screen.
+     */
     public void hyperspace() {
         if (hasHyperspace()) {
             hyperspaceTimer = HYPERSPACE_COOLDOWN;
             Globals.soundManager.playSound(SoundManager.Sounds.HYPERSPACE);
-            setPosition(rng.nextDouble() * Globals.WIDTH, rng.nextDouble() * Globals.HEIGHT);
+            setPosition(RNG.nextDouble() * Globals.WIDTH, RNG.nextDouble() * Globals.HEIGHT);
         }
     }
 
+    /**
+     * Shoot a bullet with the player as the parent.
+     */
     public void shoot() {
         if (currentShootCooldown <= 0) {
             currentShootCooldown = SHOOT_COOLDOWN;
@@ -121,6 +163,11 @@ public class Player extends PhysicSprite {
         }
     }
 
+    /**
+     * Apply the specified amount of damage to a player and kill them if they are below 0 health.
+     *
+     * @param damage the damage value to apply
+     */
     public void damage(int damage) {
         if (currentDamageCooldown <= 0) {
             currentDamageCooldown = DAMAGE_COOLDOWN;
@@ -132,16 +179,29 @@ public class Player extends PhysicSprite {
         }
     }
 
+    /**
+     * Draw's the red tint to indicate the player has been damage.
+     *
+     * @param gc the graphics context to draw to
+     */
     private void drawDamage(GraphicsContext gc) {
         ColorAdjust tint = new ColorAdjust();
         tint.setHue(0.8);
         gc.setEffect(tint);
     }
 
+    /**
+     * Gets the current health of the player.
+     *
+     * @return the player's health
+     */
     public int getHealth() {
         return health;
     }
 
+    /**
+     * Reset the player instance for a new game.
+     */
     public void reset() {
         health = 3;
         currentDamageCooldown = 0;
@@ -153,10 +213,20 @@ public class Player extends PhysicSprite {
         init();
     }
 
+    /**
+     * Whether the player can use hyperspace.
+     *
+     * @return true if the player can use hyperspace
+     */
     public boolean hasHyperspace() {
         return hyperspaceTimer <= 0;
     }
 
+    /**
+     * Add health to the current player.
+     *
+     * @param i the amount of health to add
+     */
     public void addHealth(int i) {
         health += i;
     }

@@ -5,59 +5,43 @@ import javafx.scene.canvas.GraphicsContext;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Queue;
-import java.util.concurrent.LinkedBlockingQueue;
 
+/**
+ * A special type of manager that manages a collection of sprites.
+ */
 public abstract class SpriteManager extends Manager {
 
     protected final List<Sprite> sprites;
 
-    private final Queue<Sprite> spritesToAdd;
-
+    /**
+     * Instantiates a new Sprite manager.
+     */
     public SpriteManager() {
         super();
         sprites = new ArrayList<>();
-        spritesToAdd = new LinkedBlockingQueue<>();
     }
 
-    public void addSprite(Sprite sprite) {
-        spritesToAdd.add(sprite);
-    }
+    /**
+     * Update.
+     *
+     * @param delta the delta
+     */
+    public abstract void update(double delta);
 
-    public void addSprites(Sprite... sprites) {
-        this.spritesToAdd.addAll(List.of(sprites));
-    }
-
-    public void removeSprite(Sprite sprite) {
-        sprites.remove(sprite);
-    }
-
-    public void removeSprite(int index) {
-        sprites.remove(index);
-    }
-
-    public void clearSprites() {
-        sprites.clear();
-    }
-
-    public int getSpriteCount() {
-        return sprites.size();
-    }
-
-    public Sprite getSprite(int index) {
-        return sprites.get(index);
-    }
-
-    public void update(double delta) {
-        while (!spritesToAdd.isEmpty()) {
-            sprites.add(spritesToAdd.remove());
-        }
-    }
-
+    /**
+     * Render the sprites to the canvas given the graphics context.
+     *
+     * @param ctx the graphics context of the canvas
+     */
     public void render(GraphicsContext ctx) {
         for (Sprite sprite : sprites) {
             sprite.render(ctx);
         }
     }
+
+    /**
+     * Called when a new game is started.
+     */
+    public abstract void reset();
 
 }

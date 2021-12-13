@@ -8,15 +8,26 @@ import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 import javafx.scene.text.Text;
 
+/**
+ * The main menu of the game.
+ */
 public class MainMenu extends VBox {
 
     private final Game game;
 
+    /**
+     * Instantiates a new Main menu.
+     *
+     * @param game the game
+     */
     public MainMenu(Game game) {
         this.game = game;
         init();
     }
 
+    /**
+     * Initialize.
+     */
     private void init() {
         setMinSize(Globals.WIDTH, Globals.HEIGHT);
         setPrefSize(Globals.WIDTH, Globals.HEIGHT);
@@ -41,9 +52,17 @@ public class MainMenu extends VBox {
         quitButton.setOnAction(e -> System.exit(0));
         quitButton.setMinWidth(buttonWidth);
 
-        getChildren().addAll(getTitleText(game.getTitle(), 120), playButton, instructionsButton, creditsButton, quitButton);
+        getChildren().addAll(getTitleText(game.getTitle(), 120), playButton,
+                instructionsButton, creditsButton, quitButton);
     }
 
+    /**
+     * Returns {@code text} using the game's title font 'MaldiniBold' in the specified size.
+     *
+     * @param text the text
+     * @param size the size of the text
+     * @return the formatted title text
+     */
     private Text getTitleText(String text, int size) {
         Text titleText = new Text(text);
         titleText.setFont(Font.loadFont("file:resources/fonts/MaldiniBold.ttf", size));
@@ -51,6 +70,9 @@ public class MainMenu extends VBox {
         return titleText;
     }
 
+    /**
+     * Switch to the main menu.
+     */
     public void main() {
         if (game.getChildren().size() > 1) {
             game.getChildren().remove(1);
@@ -58,6 +80,9 @@ public class MainMenu extends VBox {
         game.getChildren().add(1, game.getMainMenu());
     }
 
+    /**
+     * Switch to the credits menu.
+     */
     private void credits() {
         game.getChildren().remove(this);
         game.getChildren().add(1, new TextMenu("Credits", "CS 1302 Final Project\n"
@@ -65,6 +90,9 @@ public class MainMenu extends VBox {
                 + "By: Bilal Madi"));
     }
 
+    /**
+     * Switch to the controls menu.
+     */
     private void controls() {
         game.getChildren().remove(this);
         game.getChildren().add(1, new TextMenu("Controls",
@@ -77,7 +105,17 @@ public class MainMenu extends VBox {
                 "Escape: Pause"));
     }
 
+    /**
+     * An abstracted class for menus that display text.
+     */
     class TextMenu extends VBox {
+
+        /**
+         * Instantiates a new Text menu.
+         *
+         * @param title the title
+         * @param text  the text
+         */
         TextMenu(String title, String text) {
             setMinSize(Globals.WIDTH, Globals.HEIGHT);
             setPrefSize(Globals.WIDTH, Globals.HEIGHT);

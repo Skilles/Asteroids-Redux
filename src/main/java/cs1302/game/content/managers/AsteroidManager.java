@@ -8,12 +8,20 @@ import cs1302.game.content.sprites.Sprite;
 
 import java.util.concurrent.atomic.AtomicBoolean;
 
+/**
+ * Responsible for manipulating the asteroids in the game.
+ */
 public class AsteroidManager extends SpriteManager {
 
     private final Player player;
 
     public static int NUM_ASTEROIDS = 8;
 
+    /**
+     * Instantiates a new Asteroid manager.
+     *
+     * @param player the player
+     */
     public AsteroidManager(Player player) {
         super();
         this.player = player;
@@ -26,7 +34,6 @@ public class AsteroidManager extends SpriteManager {
 
     @Override
     public void update(double delta) {
-        super.update(delta);
         sprites.removeIf(sprite -> !sprite.isAlive());
         for (Sprite sprite : sprites) {
             Asteroid asteroid = (Asteroid) sprite;
@@ -45,6 +52,11 @@ public class AsteroidManager extends SpriteManager {
         }
     }
 
+    /**
+     * Check whether the given asteroid needs to be collided with another asteroid and does so.
+     *
+     * @param asteroid the asteroid to collide
+     */
     private void collideAsteroid(Asteroid asteroid) {
         AtomicBoolean intersects = new AtomicBoolean(false);
         sprites.stream().filter(other -> {
@@ -81,11 +93,21 @@ public class AsteroidManager extends SpriteManager {
 
     }
 
+    /**
+     * Spawn an asteroid.
+     *
+     * @param asteroid the asteroid
+     */
     public void spawnAsteroid(Asteroid asteroid) {
         sprites.add(asteroid);
         initializeAsteroid(asteroid);
     }
 
+    /**
+     * Initialize an asteroid by linking it to the bullet manager.
+     *
+     * @param asteroid the asteroid
+     */
     private void initializeAsteroid(Asteroid asteroid) {
         // Bullet on asteroid collision
         Globals.bulletManager.bindFunction(asteroid, bullet -> {
@@ -100,6 +122,9 @@ public class AsteroidManager extends SpriteManager {
         });
     }
 
+    /**
+     * Reset the manager.
+     */
     public void reset() {
         sprites.clear();
         generateAsteroids();
