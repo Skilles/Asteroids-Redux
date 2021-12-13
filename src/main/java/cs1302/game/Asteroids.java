@@ -69,25 +69,25 @@ public class Asteroids extends Game {
         if (getChildren().size() > 1) {
             return;
         }
-        pauseTimer += elapsedTime();
         if (paused) {
+            pauseTimer += elapsedTime();
             hudManager.show(ctx, "Press ESC to resume", Color.GREEN);
-            if (pauseTimer >= 0.5 && isKeyPressed(KeyCode.ESCAPE)) {
-                pauseTimer = 0;
+            if (pauseTimer >= 0.3 && isKeyPressed(KeyCode.ESCAPE)) {
                 paused = false;
             }
             return;
-        } else if (pauseTimer >= 0.5) {
-            pauseTimer = 0;
         }
 
         asteroidManager.update(elapsedTime());
         animationManager.update(currentNanoTime);
         bulletManager.update(elapsedTime());
         enemyManager.update(elapsedTime());
-
-        if (isKeyPressed(KeyCode.ESCAPE)) {
-            pause();
+        if (pauseTimer <= 0) {
+            if (isKeyPressed(KeyCode.ESCAPE)) {
+                pause();
+            }
+        } else {
+            pauseTimer -= elapsedTime();
         }
 
         if (player.isAlive()) {
@@ -159,9 +159,8 @@ public class Asteroids extends Game {
     double pauseTimer;
     @Override
     public void pause() {
-        if (pauseTimer > 0.5) {
-            paused = true;
-        }
+        pauseTimer = 0;
+        paused = true;
     }
 
 }

@@ -9,8 +9,8 @@ import javafx.scene.shape.Shape;
 
 public class Player extends PhysicSprite {
 
-    private final double hAcceleration;
-    private final double vAcceleration;
+    private double hAcceleration;
+    private double vAcceleration;
 
     // FIXME need cooldown manager tied to delta
     private static final int SHOOT_COOLDOWN = 75;
@@ -25,6 +25,10 @@ public class Player extends PhysicSprite {
 
     public Player() {
         super("file:resources/sprites/spaceship.png", Size.SMALL, 300);
+        init();
+    }
+
+    public void init() {
         hAcceleration = 500;
         vAcceleration = 500;
 
@@ -146,6 +150,7 @@ public class Player extends PhysicSprite {
         setPosition(Globals.WIDTH / 2.0, Globals.HEIGHT / 2.0);
         setVelocity(0, 0, 0);
         alive = true;
+        init();
     }
 
     public boolean hasHyperspace() {

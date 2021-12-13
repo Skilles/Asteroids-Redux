@@ -13,10 +13,13 @@ public class EnemyManager extends Manager {
     private double smallTimer;
     private double largeTimer;
 
+    public EnemyManager() {
+        super();
+        Globals.setEnemyManager(this);
+    }
+
     @Override
     protected void init() {
-        Globals.setEnemyManager(this);
-
         smallEnemy = new Enemy(Enemy.Type.SMALL);
         largeEnemy = new Enemy(Enemy.Type.LARGE);
         smallEnemy.setAlive(false);
@@ -95,6 +98,7 @@ public class EnemyManager extends Manager {
         largeEnemy.setAlive(false);
         smallTimer = 0;
         largeTimer = 0;
+        init();
     }
 
 }
