@@ -8,4 +8,7 @@ module cs1302.omega {
     exports cs1302.game;
     exports cs1302.omega;
     exports cs1302.game.content;
+    exports cs1302.game.content.sprites;
+    exports cs1302.game.content.managers;
+    exports cs1302.game.content.animations;
 } // module

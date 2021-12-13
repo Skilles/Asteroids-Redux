@@ -7,6 +7,7 @@
   <groupId>cs1302.omega</groupId>
   <artifactId>cs1302-omega</artifactId>
   <version>1.0-SNAPSHOT</version>
+  <packaging>jar</packaging>
 
   <name>cs1302-omega</name>
   <url>${cs1302.webwork.url}</url>
@@ -38,9 +39,9 @@
 
   <developers>
     <developer>
-      <name>Bilal Madi</name>
-      <email>bm44959@uga.edu</email>
-      <url>https://webwork.cs.uga.edu/~bm44959/${project.name}</url>
+      <name>${env.USER}</name>
+      <email>${env.USER}@uga.edu</email>
+      <url>https://webwork.cs.uga.edu/~${env.USER}/${project.name}</url>
     </developer>
   </developers>
 
@@ -220,8 +221,8 @@
 
   <distributionManagement>
     <site>
-      <id>$bm44959.${project.name}</id>
-      <name>$bm44959 ${project.name}</name>
+      <id>${env.USER}.${project.name}</id>
+      <name>${env.USER} ${project.name}</name>
       <url>${cs1302.webwork.path}</url>
     </site>
   </distributionManagement>
