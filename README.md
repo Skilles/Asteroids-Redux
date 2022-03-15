@@ -1,4 +1,4 @@
-#Asteroids
+# Asteroids
 Asteroids Redux is my attempt at creating a modern version of the 1979 arcade game "Asteroids" in Java using JavaFX. Shoot and dodge the asteroids to survive and gain
 score. Asteroids will split into pieces, with smaller pieces being worth more points.
 Occasionally, you will encounter a large saucer that shoots randomly as well as a small saucer that shoots at you
@@ -7,7 +7,7 @@ teleports you to a new random location, but be careful, as you may teleport into
 health every 5000 points, and you lose 1 health every time you hit an asteroid or a saucer's bullet. The game gets more
 difficult as your score increases and continues until you run out of health.
 
-###Features
+### Features
 - Original enemies with new sprites
 - Hyperspace warp
 - Custom physics-based collisions
@@ -35,8 +35,7 @@ difficult as your score increases and continues until you run out of health.
 - How to make simple sounds using jsfxr
 - How to use maven
 
-###Retrospect
-
+### Retrospect
 If I were to start over, I would plan out my project first instead of learning and restructuring as I go. I would also structure my project in a
 way that would allow me to easily add more features such as a high-score system and weapon power-ups. Lastly, if this
 was a project that I would want to release publicly, I would use more self-authored assets.
