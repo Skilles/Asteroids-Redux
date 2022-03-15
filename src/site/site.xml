@@ -3,15 +3,12 @@
   <body>
 
     <breadcrumbs>
-      <item name="${project.name}" href="./" />
+      <item name="Asteroids" href="./" />
     </breadcrumbs>
 
     <links>
-        <item name="CSCI 1302 @ UGA" href="https://github.com/cs1302uga/"/>
+        <item name="By Bilal Madi" href="https://bilalmadi.com/"/>
     </links>
-
-    <menu ref="reports"/>
-    <menu ref="modules"/>
 
   </body>
 

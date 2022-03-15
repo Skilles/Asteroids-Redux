@@ -39,24 +39,11 @@
 
   <developers>
     <developer>
-      <name>${env.USER}</name>
-      <email>${env.USER}@uga.edu</email>
-      <url>https://webwork.cs.uga.edu/~${env.USER}/${project.name}</url>
+      <name>Bilal Madi</name>
+      <email>bm44959@uga.edu</email>
+      <url>https://webwork.cs.uga.edu/~bm44959/</url>
     </developer>
   </developers>
-
-  <contributors>
-    <contributor>
-      <name>Michael E. Cotterell</name>
-      <email>mepcott@uga.edu</email>
-      <url>https://cs.uga.edu/directory/people/michael-e-cotterell</url>
-    </contributor>
-    <contributor>
-      <name>Bradley J. Barnes</name>
-      <email>bjb211@uga.edu</email>
-      <url>https://cs.uga.edu/directory/people/brad-barnes</url>
-    </contributor>
-  </contributors>
 
   <organization>
     <name>CSCI 1302 @ UGA</name>
@@ -221,9 +208,9 @@
 
   <distributionManagement>
     <site>
-      <id>${env.USER}.${project.name}</id>
-      <name>${env.USER} ${project.name}</name>
-      <url>${cs1302.webwork.path}</url>
+      <id>skilles.asteroids-redux</id>
+      <name>skilles.asteroids-redux</name>
+      <url>https://github.com/skilles/asteroids-redux</url>
     </site>
   </distributionManagement>
 
